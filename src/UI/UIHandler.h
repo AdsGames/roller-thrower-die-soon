@@ -1,34 +1,32 @@
 #pragma once
 
+#include <memory>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 #include "../globals.h"
 #include "UIElement.h"
 
-// class UIElement;
-
 class UIHandler {
  public:
-  UIHandler() {};
-  virtual ~UIHandler() {};
-  void addElement(UIElement* newUIElement);
-  void draw();
+  UIHandler() = default;
+
+  template <typename T, typename... Args>
+    requires std::derived_from<T, UIElement>
+  T& createElement(Args&&... args) {
+    auto elem = std::make_shared<T>(std::forward<Args>(args)...);
+    T& ref = *elem;
+    ui_elements.push_back(std::move(elem));
+    return ref;
+  }
+
+  bool isHovering() const;
+  void draw() const;
   void update();
-  bool isHovering();
-  UIElement* getElementByText(std::string);
-  UIElement* getElementById(std::string);
 
-  std::vector<UIElement*> getUIElements() { return ui_elements; }
-
-  void createButton(int x, int y, std::string newText, asw::Font newFont);
-  void createAnchoredButton(std::string, asw::Font, std::string, bool);
-  void createAnchoredButton(std::string,
-                            asw::Font,
-                            std::string,
-                            std::string,
-                            bool);
+  std::shared_ptr<UIElement> getElementById(const std::string& id);
 
  private:
-  std::vector<UIElement*> ui_elements;
+  std::vector<std::shared_ptr<UIElement>> ui_elements;
 };

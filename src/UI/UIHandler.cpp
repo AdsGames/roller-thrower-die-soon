@@ -1,59 +1,13 @@
 #include "UIHandler.h"
+
+#include <algorithm>
+
 #include "button.h"
 
-void UIHandler::addElement(UIElement* newUIElement) {
-  ui_elements.push_back(newUIElement);
-}
-
-bool UIHandler::isHovering() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++) {
-    if (ui_elements.at(i)->hover()) {
-      return true;
-    }
-  }
-
-  return false;
-}
-
-void UIHandler::createButton(int newX,
-                             int newY,
-                             std::string newText,
-                             asw::Font newFont) {
-  Button* newButton = new Button(newX, newY, newText, newFont);
-  ui_elements.push_back(newButton);
-}
-
-void UIHandler::createAnchoredButton(std::string newText,
-                                     asw::Font newFont,
-                                     std::string newAnchor,
-                                     bool newJustification) {
-  Button* newButton =
-      new Button(0, getElementByText(newAnchor)->getY(), newText, newFont);
-
-  if (newJustification) {
-    newButton->setX(getElementByText(newAnchor)->getRightX());
-  } else {
-    newButton->setX(getElementByText(newAnchor)->getRightX());
-  }
-
-  ui_elements.push_back(newButton);
-}
-
-void UIHandler::createAnchoredButton(std::string newText,
-                                     asw::Font newFont,
-                                     std::string newAnchor,
-                                     std::string newId,
-                                     bool newJustification) {
-  Button* newButton = new Button(0, getElementByText(newAnchor)->getY(),
-                                 newText, newId, newFont);
-
-  if (newJustification) {
-    newButton->setX(getElementByText(newAnchor)->getRightX());
-  } else {
-    newButton->setX(getElementByText(newAnchor)->getRightX());
-  }
-
-  ui_elements.push_back(newButton);
+bool UIHandler::isHovering() const {
+  return std::ranges::any_of(
+      ui_elements,
+      [](const std::shared_ptr<UIElement>& elem) { return elem->hover(); });
 }
 
 //
@@ -71,50 +25,25 @@ void UIHandler::createAnchoredButton(std::string newText,
 //
 //}
 
-UIElement* UIHandler::getElementByText(std::string newText) {
-  for (unsigned int i = 0; i < ui_elements.size(); i++) {
-    if (ui_elements.at(i)->getText() == newText) {
-      return ui_elements.at(i);
+std::shared_ptr<UIElement> UIHandler::getElementById(const std::string& id) {
+  for (auto& elem : ui_elements) {
+    if (elem->getId() == id) {
+      return elem;
     }
   }
 
-  // This will probably crash if the element is not found
-  // So be careful
-  // Plz dont hurt me
-  //  Edit: I do give ample warning before the tortured aftereffects
-  //  Just watch the console
-  UIElement* failure = new UIElement();
-  std::cout << "WARNING: Failed to find UI element " << newText
-            << " by text, may(hint:will) be unpredictable\n";
-  return failure;
+  asw::log::warn("UIHandler: no element with id '{}'", id);
+  return nullptr;
 }
 
-UIElement* UIHandler::getElementById(std::string newId) {
-  for (unsigned int i = 0; i < ui_elements.size(); i++) {
-    if (ui_elements.at(i)->getId() == newId) {
-      return ui_elements.at(i);
-    }
-  }
-
-  // This will probably crash if the element is not found
-  // So be careful
-  // Plz dont hurt me
-  //  Edit: I do give ample warning before the tortured aftereffects
-  //  Just watch the console
-  UIElement* failure = new UIElement();
-  std::cout << "WARNING: Failed to find UI element " << newId
-            << " by id, may(hint:will) be unpredictable\n";
-  return failure;
-}
-
-void UIHandler::draw() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++) {
-    ui_elements.at(i)->draw();
+void UIHandler::draw() const {
+  for (const auto& elem : ui_elements) {
+    elem->draw();
   }
 }
 
 void UIHandler::update() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++) {
-    ui_elements.at(i)->update();
+  for (auto& elem : ui_elements) {
+    elem->update();
   }
 }

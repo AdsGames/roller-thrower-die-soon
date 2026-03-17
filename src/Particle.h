@@ -2,20 +2,28 @@
 
 #include <asw/asw.h>
 
-#include "tools.h"
+enum class ParticleType {
+  Coin      = 0,
+  Death     = 1,
+  Rescue    = 2,
+  Hit       = 3,
+  EnemyDeath = 4,
+};
 
 class Particle {
  public:
-  Particle(int x, int y, int type);
+  Particle(const asw::Vec2<float>& position, ParticleType type);
 
-  void update();
-  void draw();
-  bool is_dead() const { return lifetime > 60; }
+  void update(float dt);
+  void draw() const;
+  bool is_dead() const { return lifetime_s > MAX_LIFE_S; }
 
  private:
+  constexpr static float MAX_LIFE_S = 2.0F;
+  constexpr static float PIXELS_PER_SECOND = 50.0F;
+
   asw::Texture sprite;
-  int x;
-  int y;
-  int lifetime = 0;
-  int type = 1;
+  asw::Vec2<float> position;
+  ParticleType type;
+  float lifetime_s{0};
 };

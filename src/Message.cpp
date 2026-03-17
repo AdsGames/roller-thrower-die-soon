@@ -1,37 +1,46 @@
 #include "Message.h"
 
-int Message::message_count = 0;
-int Message::time = 100;
-asw::Font Message::font;
-std::vector<std::string> Message::messageList;
+#include <asw/asw.h>
+#include <algorithm>
 
-void Message::sendMessage(std::string newMessage) {
-  messageList.insert(messageList.begin(), newMessage);
-  time = 60;
+namespace {
+asw::Font font;
+
+struct MessageEntry {
+  std::string message;
+  float time_remaining_s;
+};
+
+std::vector<MessageEntry> messages;
+
+}  // namespace
+
+void Message::send_message(const std::string& message) {
+  messages.insert(messages.begin(), {message, 5.0f});
 }
 
 void Message::load() {
   font = asw::assets::load_font("assets/font/font.ttf", 18);
 }
 
-void Message::update() {
-  time--;
-
-  if (time <= 0) {
-    time = 60;
-
-    if (messageList.size() > 0)
-      messageList.erase(messageList.begin());
+void Message::update(float dt) {
+  for (auto& message : messages) {
+    message.time_remaining_s -= dt;
   }
+
+  std::erase_if(messages, [](const MessageEntry& message) {
+    return message.time_remaining_s <= 0.0f;
+  });
 }
+
 void Message::clear() {
-  messageList.clear();
+  messages.clear();
 }
 
 void Message::draw() {
-  if (messageList.size() > 0)
-    for (unsigned int i = 0; i < messageList.size(); i++)
-      asw::draw::text(font, messageList.at(i),
-                      asw::Vec2<float>(1500, 1040 - (i * 20)),
-                      asw::Color(255, 255, 255), asw::TextJustify::Left);
+  for (size_t i = 0; i < messages.size(); i++) {
+    const float y = 1040.0F - (i * 20.0F);
+    const auto position = asw::Vec2<float>(1500.0F, y);
+    asw::draw::text(font, messages.at(i).message, position, asw::color::white);
+  }
 }

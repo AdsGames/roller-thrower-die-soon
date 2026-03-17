@@ -5,19 +5,35 @@
  **/
 #pragma once
 
-#include <vector>
-
 #include <asw/asw.h>
+#include <memory>
+#include <vector>
 
 #include "state.h"
 
 #include "Cart.h"
+#include "Direction.h"
+#include "TileType.h"
 #include "Enemy.h"
 #include "Guest.h"
 #include "Particle.h"
 #include "Tile.h"
 #include "UI/UIHandler.h"
-#include "tools.h"
+
+enum class EditorTool {
+  PlacePathEast  = 0,
+  PlacePathSouth = 1,
+  PlacePathWest  = 2,
+  PlacePathNorth = 3,
+  Grabber        = 4,
+  PlaceCoaster   = 5,
+};
+
+namespace GameBalance {
+constexpr int kPathCost     = 100;
+constexpr int kCoasterCost  = 500;
+constexpr int kUmbrellaGain = 10;
+}  // namespace GameBalance
 
 class game : public asw::scene::Scene<ProgramStates> {
  public:
@@ -36,7 +52,7 @@ class game : public asw::scene::Scene<ProgramStates> {
 
  private:
   // Load map from text
-  void load_level(std::string filename);
+  void load_level(const std::string& filename);
 
   // Entities
   std::vector<Tile> gameTiles;
@@ -48,7 +64,7 @@ class game : public asw::scene::Scene<ProgramStates> {
   UIHandler gameUI;
 
   // Guest selected by grabber
-  Guest* selectedGuest = nullptr;
+  std::unique_ptr<Guest> selectedGuest;
 
   // Images
   asw::Texture tile;
@@ -68,24 +84,18 @@ class game : public asw::scene::Scene<ProgramStates> {
   asw::Texture level_2_help;
   asw::Texture level_3_help;
   asw::Texture level_4_help;
+  asw::Texture tweezer;
 
   asw::Font font;
   asw::Font font_small;
 
-  int frame = 0;
-  int guest_spawn = 50;
-  bool started = 0;
-  bool finished = false;
-  int spawn_rate = 16;
-  float speed_g = 0.5f;
-  bool canPlaceTile(int sullys, int nose);
+  int frame;
+  int guest_spawn;
+  bool started;
+  bool finished;
+  int spawn_rate;
+  float speed_g;
+  EditorTool editor_tool;
 
-  // Grabber info
-  int old_mouse_x;
-  int old_mouse_y;
-
-  int editor_tool = 4;
-
-  float x_velocity;
-  float y_velocity;
+  bool canPlaceTile(const asw::Vec2<float>& pos);
 };

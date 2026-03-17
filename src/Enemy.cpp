@@ -1,8 +1,8 @@
 #include "Enemy.h"
 
 Enemy::Enemy(int x, int y) {
-  sprite = asw::assets::load_texture("assets/images/flail.png");
-  font = asw::assets::load_font("assets/font/font.ttf", 32);
+  sprite = asw::assets::load_texture("assets/images/flail.png", "flail");
+  font = asw::assets::load_font("assets/font/font.ttf", 32, "font");
 
   for (int i = 0; i < 8; i++) {
     for (int t = 0; t < 8; t++) {
@@ -10,9 +10,11 @@ Enemy::Enemy(int x, int y) {
 
       if (index < 62) {
         spritesheet[index] = asw::assets::create_texture(498, 297);
+        asw::display::set_render_target(spritesheet[index]);
         asw::draw::stretch_sprite_blit(
             sprite, asw::Quad<float>(t * 498, i * 297, 498, 297),
             asw::Quad<float>(0, 0, 498, 297));
+        asw::display::reset_render_target();
       }
     }
   }

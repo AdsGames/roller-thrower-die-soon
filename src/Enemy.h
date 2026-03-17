@@ -2,8 +2,6 @@
 
 #include <asw/asw.h>
 
-#include "tools.h"
-
 class Enemy {
  public:
   Enemy(int x, int y);
@@ -19,8 +17,9 @@ class Enemy {
   void applyDamage(int amount);
 
   // Getters for position
-  int getX() const { return x; }
-  int getY() const { return y; }
+  float getX() const { return x; }
+  float getY() const { return y; }
+  asw::Vec2<float> getPosition() const { return asw::Vec2<float>(x, y); }
   int getHealth() const { return health; }
 
  private:

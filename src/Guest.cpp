@@ -1,6 +1,7 @@
 #include "Guest.h"
 
 #include <array>
+#include <cmath>
 #include <format>
 
 float Guest::speed = 0.0f;
@@ -35,7 +36,7 @@ std::string genInital() {
 }
 }  // namespace
 
-Guest::Guest(int x, int y) : x(x), y(y) {
+Guest::Guest(const asw::Vec2<float>& position) : position(position) {
   sprite = asw::assets::load_texture("assets/images/walk.png");
   umbrella = asw::assets::load_texture("assets/images/Umbrella.png");
 
@@ -44,87 +45,82 @@ Guest::Guest(int x, int y) : x(x), y(y) {
 
   for (int i = 0; i < 43; i++) {
     spritesheet[i] = asw::assets::create_texture(17, 36);
+    asw::display::set_render_target(spritesheet[i]);
     asw::draw::stretch_sprite_blit(sprite, asw::Quad<float>(0, i * 38, 17, 38),
                                    asw::Quad<float>(0, 0, 17, 38));
+    asw::display::reset_render_target();
   }
 
   sprite = asw::assets::load_texture("assets/images/panic.png");
 
   for (int i = 0; i < 25; i++) {
     spritesheet_panic[i] = asw::assets::create_texture(17, 36);
+    asw::display::set_render_target(spritesheet_panic[i]);
     asw::draw::stretch_sprite_blit(sprite, asw::Quad<float>(0, i * 36, 17, 36),
                                    asw::Quad<float>(0, 0, 17, 38));
+    asw::display::reset_render_target();
   }
 }
 
-void Guest::update() {
-  const float threshold = 1.0F;
-  const float decel = 1.2F;
+void Guest::update(float dt) {
+  frame_counter += dt;
 
-  if (x_velocity > -threshold && x_velocity < threshold) {
-    x_velocity = 0;
-  }
-
-  if (y_velocity > -threshold && y_velocity < threshold) {
-    y_velocity = 0;
-  }
-
-  if (y_velocity > 0) {
-    y_velocity /= decel;
-  }
-
-  if (y_velocity < 0) {
-    y_velocity /= decel;
-  }
-
-  if (x_velocity > 0) {
-    x_velocity /= decel;
-  }
-
-  if (x_velocity < 0) {
-    x_velocity /= decel;
-  }
-
-  if (y_velocity == 0 && x_velocity == 0) {
-    if (direction == 0) {
-      x += speed;
-      y -= 0.5F * speed;
+  // Walking logic
+  if (velocity.x == 0 && velocity.y == 0) {
+    if (direction == Direction::East) {
+      position.x += PIXELS_PER_S * dt;
+      position.y -= 0.5F * PIXELS_PER_S * dt;
     }
 
-    if (direction == 1) {
-      x += speed;
-      y += 0.5F * speed;
+    if (direction == Direction::South) {
+      position.x += PIXELS_PER_S * dt;
+      position.y += 0.5F * PIXELS_PER_S * dt;
     }
 
-    if (direction == 2) {
-      x -= speed;
-      y += 0.5F * speed;
+    if (direction == Direction::West) {
+      position.x -= PIXELS_PER_S * dt;
+      position.y += 0.5F * PIXELS_PER_S * dt;
     }
 
-    if (direction == 3) {
-      x -= speed;
-      y -= 0.5F * speed;
+    if (direction == Direction::North) {
+      position.x -= PIXELS_PER_S * dt;
+      position.y -= 0.5F * PIXELS_PER_S * dt;
     }
   } else {
-    x += x_velocity;
-    y += y_velocity;
-  }
+    // Throwing logic
+    if (velocity.x > -MIN_VELOCITY && velocity.x < MIN_VELOCITY) {
+      velocity.x = 0;
+    } else {
+      velocity.x *= std::pow(DECELERATION_FACTOR, dt);
+    }
 
-  frame = (frame + 1) % 42;
-  frame_panic = (frame + 1) % 25;
+    if (velocity.y > -MIN_VELOCITY && velocity.y < MIN_VELOCITY) {
+      velocity.y = 0;
+    } else {
+      velocity.y *= std::pow(DECELERATION_FACTOR, dt);
+    }
+
+    position += velocity;
+  }
 }
 
 void Guest::draw() const {
+  const auto total_frame = static_cast<int>(frame_counter * FRAMES_PER_S);
+
   if (!captured) {
-    asw::draw::sprite(spritesheet[frame], asw::Vec2<float>(x - 8, y - 18));
+    const auto frame = total_frame % spritesheet.size();
+    asw::draw::sprite(spritesheet[frame], position - asw::Vec2<float>(8, 18));
   } else {
+    const auto frame_panic = total_frame % spritesheet_panic.size();
     asw::draw::sprite(spritesheet_panic[frame_panic],
-                      asw::Vec2<float>(x - 10, y - 18));
+                      position - asw::Vec2<float>(10, 18));
   }
 
   if (has_umbrella) {
-    asw::draw::sprite(umbrella, asw::Vec2<float>(x + 3, y - 20));
+    asw::draw::sprite(umbrella, position + asw::Vec2<float>(3, -20));
   }
+
+  asw::draw::circle(getPosition(), 4, asw::color::red);
 }
 
 std::string Guest::getName() const {

@@ -6,13 +6,15 @@
 
 class Cart : public Guest {
  public:
-  Cart(int x, int y);
+  Cart(const asw::Vec2<float>& position);
 
-  void update() override;
+  void update(float dt) override;
   void draw() const override;
 
  private:
-  float accel;
-  float spin;
+  constexpr static float MAX_ACCEL = 0.4F;
+
+  float accel{0.0F};
+  float spin{0.0F};
   asw::Texture cart;
 };

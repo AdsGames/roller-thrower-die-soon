@@ -2,8 +2,6 @@
 
 #include <asw/asw.h>
 
-#include "tools.h"
-
 #include "UI/UIElement.h"
 #include "UI/UIHandler.h"
 #include "UI/button.h"
@@ -22,7 +20,6 @@ class LevelFinish : public asw::scene::Scene<ProgramStates> {
  private:
   UIHandler LevelFinishUI;
 
-  asw::Texture cursor;
   asw::Font font;
   asw::Font font_big;
   asw::Font font_extra_thicc;

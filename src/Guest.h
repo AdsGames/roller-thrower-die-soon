@@ -1,30 +1,33 @@
 #pragma once
 
 #include <asw/asw.h>
+#include <array>
 
+#include "Direction.h"
 #include "Message.h"
-#include "tools.h"
 
 class Guest {
  public:
   Guest() = default;
-  Guest(int x, int y);
+  explicit Guest(const asw::Vec2<float>& position);
+
+  Guest(const Guest& other) = default;
   virtual ~Guest() = default;
 
   virtual void draw() const;
-  virtual void update();
+  virtual void update(float dt);
 
-  int getX() const { return x; }
-  int getY() const { return y; }
-  void setX(int d) {
-    x = d;  // XD loL
+  // Position offset to feet
+  asw::Vec2<float> getPosition() const {
+    return asw::Vec2<float>(position.x, position.y + 12);
   }
-  void setY(int d) { y = d; }
-  void setDirection(int d) { direction = d; }
-  void setVelocityX(float bx) { x_velocity = bx; }
-  void setVelocityY(float by) { y_velocity = by; }
-  int getVelocityX() const { return x_velocity; }
-  int getVelocityY() const { return y_velocity; }
+
+  void setPosition(const asw::Vec2<float>& pos) { position = pos; }
+
+  void setVelocity(const asw::Vec2<float>& v) { velocity = v; }
+  const asw::Vec2<float>& getVelocity() const { return velocity; }
+
+  void setDirection(Direction d) { direction = d; }
   bool getIsCart() const { return is_cart; }
   void setCaptured(bool b) { captured = b; }
 
@@ -44,22 +47,24 @@ class Guest {
  protected:
   asw::Texture sprite;
   asw::Texture umbrella;
-  asw::Texture spritesheet[43];
-  asw::Texture spritesheet_panic[25];
+  std::array<asw::Texture, 43> spritesheet;
+  std::array<asw::Texture, 25> spritesheet_panic;
 
-  float x = 0;
-  float y = 0;
-  float x_velocity = 0;
-  float y_velocity = 0;
+  asw::Vec2<float> position;
+  asw::Vec2<float> velocity;
 
-  int frame = 0;
-  int frame_panic = 0;
-  int direction = 0;
-  bool captured = false;
-  bool has_umbrella = false;
-  bool is_cart = false;
+  float frame_counter{0.0F};
+  Direction direction{Direction::East};
+  bool captured{false};
+  bool has_umbrella{false};
+  bool is_cart{false};
 
  private:
+  constexpr static float MIN_VELOCITY = 0.5F;
+  constexpr static float DECELERATION_FACTOR = 0.02F;
+  constexpr static float FRAMES_PER_S = 50.0F;
+  constexpr static float PIXELS_PER_S = 30.0F;
+
   std::string name;
   std::string inital;
 };

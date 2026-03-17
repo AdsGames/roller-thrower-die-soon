@@ -1,59 +1,27 @@
 # Roller Thrower Die Soon
 
-Throw guests to their death for fun. Roller Thrower Die Soon is our submission to Tojam in Allegro 5.
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=AdsGames_roller-thrower-die-soon&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=AdsGames_roller-thrower-die-soon)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=AdsGames_roller-thrower-die-soon&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=AdsGames_roller-thrower-die-soon)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=AdsGames_roller-thrower-die-soon&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=AdsGames_roller-thrower-die-soon)
 
-## Getting started
+Throw guests to their death for fun. Roller Thrower Die Soon is our submission to Tojam in Allegro 5, converted to use SDL w/ ASW wrapper.
 
-### Windows (MSYS2)
+## Demo
 
-#### Install Libraries
+[Web Demo](https://adsgames.github.io/roller-thrower-die-soon/)
+
+## Setup
+
+### CMake
 
 ```bash
-pacman --noconfirm -S mingw-w64-i686-gcc-libs mingw-w64-i686-dumb mingw-w64-i686-flac mingw-w64-i686-opusfile mingw-w64-i686-freetype mingw-w64-i686-libjpeg-turbo mingw-w64-i686-libpng mingw-w64-i686-libvorbis mingw-w64-i686-libwebp mingw-w64-i686-openal mingw-w64-i686-physfs mingw-w64-i686-allegro
+cmake --preset debug
+cmake --build --preset debug
 ```
 
-#### Build
+### Build Emscripten
 
 ```bash
-cmake -G "MSYS Makefiles" .
-```
-
-```bash
-make
-```
-
-### Mac OS
-
-#### Install Libraries
-
-```bash
-brew install allegro
-```
-
-#### Build
-
-```bash
-cmake -G "Unix Makefiles" .
-```
-
-```bash
-make
-```
-
-### Linux
-
-#### Install Libraries
-
-```bash
-sudo apt install liballegro5-dev liballegro-acodec5-dev liballegro-audio5-dev liballegro-image5-dev liballegro-dialog5-dev liballegro-ttf5-dev
-```
-
-#### Build
-
-```bash
-cmake -G "Unix Makefiles" .
-```
-
-```bash
-make
+emcmake cmake --preset debug
+cmake --build --preset debug
 ```

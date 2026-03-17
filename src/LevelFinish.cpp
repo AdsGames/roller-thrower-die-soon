@@ -7,21 +7,17 @@ void LevelFinish::init() {
   font_big = asw::assets::load_font("assets/font/font.ttf", 56);
   font_extra_thicc = asw::assets::load_font("assets/font/font.ttf", 100);
 
-  cursor = asw::assets::load_texture("assets/images/tweezersOpen.png");
-
-  LevelFinishUI.addElement(new Button(200, 800, "Continue", font));
-  //
-  //    OptionsUI.addElement( new Button(  400, 200, "Level 2", font));
-  //
-  //    OptionsUI.addElement( new Button(  600, 200, "Level 3", font));
-  //
-  //    OptionsUI.addElement( new Button(  800, 200, "Level 4", font));
+  LevelFinishUI = UIHandler();
+  auto& btn_continue = LevelFinishUI.createElement<Button>("continue");
+  btn_continue.setPosition({200.0F, 800.0F});
+  btn_continue.setFont(font);
+  btn_continue.setText("Continue");
 }
 
 void LevelFinish::update(float dt) {
   LevelFinishUI.update();
 
-  if (LevelFinishUI.getElementByText("Continue")->clicked()) {
+  if (LevelFinishUI.getElementById("continue")->clicked()) {
     game::level = 4;
     manager.set_next_scene(ProgramStates::Options);
   }
@@ -85,7 +81,4 @@ void LevelFinish::draw() {
                   asw::TextJustify::Left);
   asw::draw::text(font, "of guests survived.", asw::Vec2<float>(1250, 420),
                   asw::Color(200, 50, 50), asw::TextJustify::Left);
-  asw::draw::sprite(cursor,
-                    asw::Vec2<float>(asw::input::mouse.position.x - 8,
-                                     asw::input::mouse.position.y - 56));
 }

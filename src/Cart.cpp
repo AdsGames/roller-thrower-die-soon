@@ -1,29 +1,22 @@
 #include "Cart.h"
 
-Cart::Cart(int x, int y) {
-  this->x = x;
-  this->y = y;
-  cart = asw::assets::load_texture("assets/images/tiles/car.png");
-  accel = 0.0f;
-  spin = 0.0f;
-  x_velocity = -0;
-  y_velocity = -0;
+Cart::Cart(const asw::Vec2<float>& position) {
+  this->position = position;
+  cart = asw::assets::load_texture("assets/images/tiles/car.png", "cart");
   is_cart = true;
 }
 
-void Cart::update() {
-  accel += 0.02f;
+void Cart::update(float dt) {
+  accel += 0.02F;
 
-  if (accel > 0.4f) {
-    spin += 0.1f + (accel * 0.1f);
+  if (accel > MAX_ACCEL) {
+    spin += 0.1F + (accel * 0.1F);
   }
 
-  x_velocity += accel * -4;
-  y_velocity += accel * -4;
-  x += x_velocity;
-  y += y_velocity;
+  velocity += asw::Vec2<float>(accel, accel) * -4.0F;
+  position += velocity;
 }
 
 void Cart::draw() const {
-  asw::draw::rotate_sprite(cart, asw::Vec2<float>(x, y), spin);
+  asw::draw::rotate_sprite(cart, position, spin);
 }

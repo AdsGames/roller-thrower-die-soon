@@ -8,12 +8,35 @@ void Options::init() {
   background = asw::assets::load_texture("assets/images/levelSelecT.png");
   load = asw::assets::load_texture("assets/images/loading.png");
 
-  OptionsUI.addElement(new Button(400, 550, "Level 1", font_big));
-  OptionsUI.addElement(new Button(600, 550, "Level 2", font_big));
-  OptionsUI.addElement(new Button(800, 550, "Level 3", font_big));
-  OptionsUI.addElement(new Button(1000, 550, "Level 4", font_big));
-  OptionsUI.addElement(new Button(1200, 550, "Level 5", font_big));
-  OptionsUI.addElement(new Button(1400, 550, "Level 6", font_big));
+  auto& btn_level_1 = OptionsUI.createElement<Button>("level_1");
+  btn_level_1.setPosition({400.0F, 550.0F});
+  btn_level_1.setFont(font_big);
+  btn_level_1.setText("Level 1");
+
+  auto& btn_level_2 = OptionsUI.createElement<Button>("level_2");
+  btn_level_2.setPosition({600.0F, 550.0F});
+  btn_level_2.setFont(font_big);
+  btn_level_2.setText("Level 2");
+
+  auto& btn_level_3 = OptionsUI.createElement<Button>("level_3");
+  btn_level_3.setPosition({800.0F, 550.0F});
+  btn_level_3.setFont(font_big);
+  btn_level_3.setText("Level 3");
+
+  auto& btn_level_4 = OptionsUI.createElement<Button>("level_4");
+  btn_level_4.setPosition({1000.0F, 550.0F});
+  btn_level_4.setFont(font_big);
+  btn_level_4.setText("Level 4");
+
+  auto& btn_level_5 = OptionsUI.createElement<Button>("level_5");
+  btn_level_5.setPosition({1200.0F, 550.0F});
+  btn_level_5.setFont(font_big);
+  btn_level_5.setText("Level 5");
+
+  auto& btn_level_6 = OptionsUI.createElement<Button>("level_6");
+  btn_level_6.setPosition({1400.0F, 550.0F});
+  btn_level_6.setFont(font_big);
+  btn_level_6.setText("Level 6");
 }
 
 void Options::draw() {
@@ -33,32 +56,32 @@ void Options::update(float dt) {
     manager.set_next_scene(ProgramStates::Menu);
   }
 
-  if (OptionsUI.getElementByText("Level 1")->clicked()) {
+  if (OptionsUI.getElementById("level_1")->clicked()) {
     game::level = 1;
     manager.set_next_scene(ProgramStates::Game);
   }
 
-  if (OptionsUI.getElementByText("Level 2")->clicked()) {
+  if (OptionsUI.getElementById("level_2")->clicked()) {
     game::level = 2;
     manager.set_next_scene(ProgramStates::Game);
   }
 
-  if (OptionsUI.getElementByText("Level 3")->clicked()) {
+  if (OptionsUI.getElementById("level_3")->clicked()) {
     game::level = 3;
     manager.set_next_scene(ProgramStates::Game);
   }
 
-  if (OptionsUI.getElementByText("Level 4")->clicked()) {
+  if (OptionsUI.getElementById("level_4")->clicked()) {
     game::level = 4;
     manager.set_next_scene(ProgramStates::Game);
   }
 
-  if (OptionsUI.getElementByText("Level 5")->clicked()) {
+  if (OptionsUI.getElementById("level_5")->clicked()) {
     game::level = 5;
     manager.set_next_scene(ProgramStates::Game);
   }
 
-  if (OptionsUI.getElementByText("Level 6")->clicked()) {
+  if (OptionsUI.getElementById("level_6")->clicked()) {
     game::level = 6;
     manager.set_next_scene(ProgramStates::Game);
   }

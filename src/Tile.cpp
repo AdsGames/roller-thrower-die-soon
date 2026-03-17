@@ -1,65 +1,72 @@
 #include "Tile.h"
 
-Tile::Tile(int x, int y, int type) {
-  // Nullify bitmaps
-  sprite = nullptr;
-  grid = nullptr;
+#include <cmath>
 
-  // Set type
-  this->type = type;
-
+Tile::Tile(const asw::Vec2<float>& position, TileType type)
+    : position(position), type(type) {
   // Set sprites
   switch (type) {
-    case 0:
-      sprite = asw::assets::load_texture("assets/images/tiles/Grass.png");
+    case TileType::Grass:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Grass.png", "grass");
       break;
 
-    case 1:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path.png");
+    case TileType::Path:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Path.png", "path");
       break;
 
-    case 2:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path_0.png");
+    case TileType::Entrance:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Path_0.png", "path_0");
       break;
 
-    case 3:
-      sprite = asw::assets::load_texture("assets/images/tiles/Win.png");
+    case TileType::Win:
+      sprite = asw::assets::load_texture("assets/images/tiles/Win.png", "win");
       break;
 
-    case 4:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path_3.png");
+    case TileType::DirectionalNorth:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Path_3.png", "path_3");
       break;
 
-    case 5:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path_0.png");
+    case TileType::DirectionalEast:
+      sprite = asw::assets::load_texture("assets/images/tiles/Path_0.png",
+                                         "path_0_2");
       break;
 
-    case 6:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path_1.png");
+    case TileType::DirectionalSouth:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Path_1.png", "path_1");
       break;
 
-    case 7:
-      sprite = asw::assets::load_texture("assets/images/tiles/Path_2.png");
+    case TileType::DirectionalWest:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Path_2.png", "path_2");
       break;
 
-    case 8:
-      sprite = asw::assets::load_texture("assets/images/tiles/Water.png");
+    case TileType::Water:
+      sprite =
+          asw::assets::load_texture("assets/images/tiles/Water.png", "water");
 
       for (int i = 0; i < 4; i++) {
-        spritesheet_Water[i] = asw::assets::create_texture(128, 64);
+        spritesheet_water[i] = asw::assets::create_texture(128, 64);
+        asw::display::set_render_target(spritesheet_water[i]);
         asw::draw::stretch_sprite_blit(sprite,
                                        asw::Quad<float>(i * 128, 0, 128, 64),
                                        asw::Quad<float>(0, 0, 128, 64));
+        asw::display::reset_render_target();
       }
       break;
 
-    case 9:
-      sprite =
-          asw::assets::load_texture("assets/images/tiles/umbrellaStand2.png");
+    case TileType::Umbrella:
+      sprite = asw::assets::load_texture(
+          "assets/images/tiles/umbrellaStand2.png", "umbrella_stand");
       break;
 
-    case 10:
-      sprite = asw::assets::load_texture("assets/images/tiles/coaster.png");
+    case TileType::Coaster:
+      sprite = asw::assets::load_texture("assets/images/tiles/coaster.png",
+                                         "coaster");
       break;
 
     default:
@@ -67,63 +74,43 @@ Tile::Tile(int x, int y, int type) {
   }
 
   // Load grid
-  grid = asw::assets::load_texture("assets/images/tiles/EmptyGrid.png");
-
-  // Set position
-  this->x = x;
-  this->y = y;
+  grid = asw::assets::load_texture("assets/images/tiles/EmptyGrid.png",
+                                   "empty_grid");
 
   // Calculate isometric position
-  const int bigx = x * 64;
-  const int bigy = y * 64;
-  iso_x = (bigx - bigy);
-  iso_y = (bigx + bigy) / 2;
+  const auto big_pos = position * 64.0F;
+  iso_position.x = (big_pos.x - big_pos.y);
+  iso_position.y = (big_pos.x + big_pos.y) / 2;
 }
 
-// Check if x and y are in tile
-bool Tile::colliding(int x, int y, int width, int height) const {
-  return tools::collision(x, x + width, iso_x + 32, iso_x + 96, y, y + height,
-                          iso_y + 0, iso_y + 64);
+// Check if x and y are in tile (diamond check)
+bool Tile::colliding(const asw::Vec2<float>& pos) const {
+  const float dx = std::abs(pos.x - (iso_position.x + 64.0F)) / 64.0F;
+  const float dy = std::abs(pos.y - (iso_position.y + 32.0F)) / 32.0F;
+  return (dx + dy) <= 1.0F;
 }
 
-bool Tile::colliding_water(int x, int y, int width, int height) const {
-  return tools::collision(x, x + width, iso_x + 32, iso_x + 96, y, y + height,
-                          iso_y + 16, iso_y + 48);
-}
-
-bool Tile::colliding_loose(int x, int y, int width, int height) const {
-  return tools::collision(x, x + width, iso_x + 32 - 64, iso_x + 96 + 64, y,
-                          y + height, iso_y + 0 - 32, iso_y + 64 + 32);
-}
-
-// Check if x and y are in tile (tight)
-bool Tile::colliding_tight(int x, int y, int width, int height) const {
-  return tools::collision(x, x + width, iso_x + 48, iso_x + 80, y, y + height,
-                          iso_y + 16, iso_y + 48);
-}
-
-void Tile::draw() {
+void Tile::draw() const {
   if (sprite != nullptr) {
-    if (type == 9) {
-      asw::draw::sprite(sprite, asw::Vec2<float>(iso_x, iso_y - 57));
-    } else if (type == 10) {
-      asw::draw::sprite(sprite, asw::Vec2<float>(iso_x - 238, iso_y - 319));
-    } else if (type == 8) {
-      frame++;
-      asw::draw::sprite(spritesheet_Water[frame / 10],
-                        asw::Vec2<float>(iso_x, iso_y));
+    if (type == TileType::Umbrella) {
+      asw::draw::sprite(sprite,
+                        asw::Vec2<float>(iso_position.x, iso_position.y - 57));
+    } else if (type == TileType::Coaster) {
+      asw::draw::sprite(
+          sprite, asw::Vec2<float>(iso_position.x - 238, iso_position.y - 319));
+    } else if (type == TileType::Water) {
+      const auto frame = static_cast<int>(frame_counter * FRAMES_PER_SECOND) %
+                         spritesheet_water.size();
 
-      if (frame >= 39) {
-        frame = 0;
-      }
+      asw::draw::sprite(spritesheet_water[frame],
+                        asw::Vec2<float>(iso_position.x, iso_position.y));
     } else {
-      asw::draw::sprite(sprite, asw::Vec2<float>(iso_x, iso_y));
+      asw::draw::sprite(sprite,
+                        asw::Vec2<float>(iso_position.x, iso_position.y));
     }
   }
 
-  if (type != 9) {
-    if (grid != nullptr) {
-      asw::draw::sprite(grid, asw::Vec2<float>(iso_x, iso_y));
-    }
+  if (type != TileType::Umbrella) {
+    asw::draw::sprite(grid, iso_position);
   }
 }

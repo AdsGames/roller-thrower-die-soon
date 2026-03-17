@@ -10,7 +10,6 @@
 #include "Options.h"
 #include "UI/button.h"
 #include "state.h"
-#include "tools.h"
 
 // Menu
 class menu : public asw::scene::Scene<ProgramStates> {
