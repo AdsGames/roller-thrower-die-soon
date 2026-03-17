@@ -3,8 +3,8 @@
 #include <asw/asw.h>
 #include <array>
 
-#include "Direction.h"
-#include "Message.h"
+#include "direction.h"
+#include "message.h"
 
 class Guest {
  public:

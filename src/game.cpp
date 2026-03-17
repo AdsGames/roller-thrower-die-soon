@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-#include "UI/button.h"
+#include "ui/button.h"
 
 int game::level = 1;
 int game::guests_died_enemies = 0;

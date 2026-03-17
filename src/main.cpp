@@ -6,13 +6,13 @@
  */
 #include <asw/asw.h>
 
-#include "LevelFinish.h"
+#include "level_finish.h"
 #include "game.h"
 #include "init.h"
 #include "menu.h"
 #include "state.h"
 
-#include "Options.h"
+#include "options.h"
 
 // Start here
 int main(int argc, char** argv) {

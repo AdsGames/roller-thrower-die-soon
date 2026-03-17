@@ -11,14 +11,14 @@
 
 #include "state.h"
 
-#include "Cart.h"
-#include "Direction.h"
-#include "TileType.h"
-#include "Enemy.h"
-#include "Guest.h"
-#include "Particle.h"
-#include "Tile.h"
-#include "UI/UIHandler.h"
+#include "cart.h"
+#include "direction.h"
+#include "tile_type.h"
+#include "enemy.h"
+#include "guest.h"
+#include "particle.h"
+#include "tile.h"
+#include "ui/ui_handler.h"
 
 enum class EditorTool {
   PlacePathEast  = 0,

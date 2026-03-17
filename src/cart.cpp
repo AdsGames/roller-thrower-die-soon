@@ -1,4 +1,4 @@
-#include "Cart.h"
+#include "cart.h"
 
 Cart::Cart(const asw::Vec2<float>& position) {
   this->position = position;

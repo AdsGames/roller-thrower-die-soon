@@ -1,4 +1,4 @@
-#include "Tile.h"
+#include "tile.h"
 
 #include <cmath>
 

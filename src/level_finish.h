@@ -2,9 +2,9 @@
 
 #include <asw/asw.h>
 
-#include "UI/UIElement.h"
-#include "UI/UIHandler.h"
-#include "UI/button.h"
+#include "ui/ui_element.h"
+#include "ui/ui_handler.h"
+#include "ui/button.h"
 
 #include "game.h"
 #include "state.h"

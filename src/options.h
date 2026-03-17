@@ -2,9 +2,9 @@
 
 #include <string>
 
-#include "UI/UIElement.h"
-#include "UI/UIHandler.h"
-#include "UI/button.h"
+#include "ui/ui_element.h"
+#include "ui/ui_handler.h"
+#include "ui/button.h"
 #include "state.h"
 
 #include "game.h"

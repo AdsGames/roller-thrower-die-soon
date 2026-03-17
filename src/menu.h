@@ -7,8 +7,8 @@
 
 #include <asw/asw.h>
 
-#include "Options.h"
-#include "UI/button.h"
+#include "options.h"
+#include "ui/button.h"
 #include "state.h"
 
 // Menu

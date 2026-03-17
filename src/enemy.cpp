@@ -1,4 +1,4 @@
-#include "Enemy.h"
+#include "enemy.h"
 
 Enemy::Enemy(int x, int y) {
   sprite = asw::assets::load_texture("assets/images/flail.png", "flail");

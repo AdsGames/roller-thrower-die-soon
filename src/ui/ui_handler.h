@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../globals.h"
-#include "UIElement.h"
+#include "ui_element.h"
 
 class UIHandler {
  public:

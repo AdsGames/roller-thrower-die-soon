@@ -1,4 +1,4 @@
-#include "Options.h"
+#include "options.h"
 
 void Options::init() {
   font = asw::assets::load_font("assets/font/font.ttf", 18);

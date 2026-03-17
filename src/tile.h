@@ -3,7 +3,7 @@
 #include <asw/asw.h>
 #include <array>
 
-#include "TileType.h"
+#include "tile_type.h"
 
 class Tile {
  public:
