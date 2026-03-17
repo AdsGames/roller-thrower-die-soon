@@ -1,5 +1,4 @@
-#ifndef DISPLAYMODE_H
-#define DISPLAYMODE_H
+#pragma once
 
 enum {
   fullscreen_window_stretch,
@@ -20,5 +19,3 @@ class DisplayMode {
   static int window_render_height;
   static int window_render_width;
 };
-
-#endif  // DISPLAYMODE_H

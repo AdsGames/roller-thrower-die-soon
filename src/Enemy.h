@@ -1,35 +1,33 @@
-#ifndef ENEMY_H
-#define ENEMY_H
+#pragma once
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_ttf.h>
+#include <asw/asw.h>
+
 #include "tools.h"
 
 class Enemy {
  public:
   Enemy(int x, int y);
-  virtual ~Enemy();
 
   // Run any logic needed by enemy
   void update();
 
   // Draw enemy to screen
-  void draw();
+  void draw() const;
 
   // Applys a variable amount of damage
   // to enemy
-  void applyDamage(int);
+  void applyDamage(int amount);
 
   // Getters for position
-  int getX() { return x; }
-  int getY() { return y; }
-  int getHealth() { return health; }
+  int getX() const { return x; }
+  int getY() const { return y; }
+  int getHealth() const { return health; }
 
  private:
   // Images
-  ALLEGRO_BITMAP* sprite;
-  ALLEGRO_BITMAP* spritesheet[62];
-  ALLEGRO_FONT* font;
+  asw::Texture sprite;
+  asw::Texture spritesheet[62];
+  asw::Font font;
 
   // Position
   int x;
@@ -41,5 +39,3 @@ class Enemy {
   // Hit points
   int health = 1000;
 };
-
-#endif  // ENEMY_H

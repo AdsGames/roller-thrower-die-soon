@@ -3,27 +3,15 @@
  * Allan Legemaate
  * 09/05/2017
  **/
-#ifndef INIT_H
-#define INIT_H
+#pragma once
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_acodec.h>
-#include <allegro5/allegro_audio.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_primitives.h>
+#include <asw/asw.h>
 
 #include "state.h"
 
-class init : public state {
+class Init : public asw::scene::Scene<ProgramStates> {
  public:
-  init();
-  ~init(){};
+  using asw::scene::Scene<ProgramStates>::Scene;
 
-  void update(){};
-  void draw() {}
-
- protected:
- private:
+  void update(float dt) override;
 };
-
-#endif  // INIT_H

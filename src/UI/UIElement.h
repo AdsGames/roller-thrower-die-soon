@@ -1,23 +1,19 @@
-#ifndef UIELEMENT_H
-#define UIELEMENT_H
+#pragma once
 
-#include <allegro5/allegro5.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_primitives.h>
+#include <asw/asw.h>
 #include <string>
 
-//#include "Button.h"
-#include "../listeners/mouseListener.h"
+// #include "Button.h"
 #include "../tools.h"
 
 class UIElement {
  public:
   // Constructor
   UIElement();
-  UIElement(int, int, std::string, ALLEGRO_FONT*);
-  UIElement(int, int, std::string, std::string, ALLEGRO_FONT*);
+  UIElement(int, int, std::string, asw::Font);
+  UIElement(int, int, std::string, std::string, asw::Font);
 
-  virtual ~UIElement();
+  virtual ~UIElement() = default;
 
   // Getters
   int getX() { return x; }
@@ -35,8 +31,8 @@ class UIElement {
     bitmap_rotation_angle = newRotation;
   }
   void setX(int newX) { x = newX; }
-  void setTextColour(ALLEGRO_COLOR newColour) { text_colour = newColour; }
-  void setBackgroundColour(ALLEGRO_COLOR newColour) {
+  void setTextColour(asw::Color newColour) { text_colour = newColour; }
+  void setBackgroundColour(asw::Color newColour) {
     background_colour = newColour;
   }
   void setCellFillTransparent(bool n) { transparent_cell_fill = n; }
@@ -69,8 +65,8 @@ class UIElement {
   }
   void setText(std::string text) { this->text = text; }
   void setId(std::string id) { this->id = id; }
-  void setImage(ALLEGRO_BITMAP* image);
-  void setFont(ALLEGRO_FONT* font);
+  void setImage(asw::Texture image);
+  void setFont(asw::Font font);
   void setVisibleBackground(bool b) { visible_background = b; }
   void setWidth(int newWidth) { width = newWidth; }
   void setHeight(int newHeight) { height = newHeight; }
@@ -114,8 +110,8 @@ class UIElement {
   int justification;
 
   // Frick you
-  ALLEGRO_COLOR text_colour;
-  ALLEGRO_COLOR background_colour;
+  asw::Color text_colour;
+  asw::Color background_colour;
 
   // Inactive cannot be clicked/hovered
   // Invisible cannot be seen
@@ -126,15 +122,13 @@ class UIElement {
   bool transparent_cell_fill;
   bool disabled_hover_effect;
 
-  ALLEGRO_BITMAP* image;
+  asw::Texture image;
 
   // Font
-  ALLEGRO_FONT* UIElement_font;
+  asw::Font UIElement_font;
 
   std::string text;
   std::string id;
 
  private:
 };
-
-#endif  // UIELEMENT_H

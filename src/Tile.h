@@ -1,32 +1,31 @@
-#ifndef TILE_H
-#define TILE_H
+#pragma once
 
-#include "allegro5/allegro.h"
+#include <asw/asw.h>
 #include "tools.h"
 
 class Tile {
  public:
-  Tile(int, int, int);
-  virtual ~Tile() {}
+  Tile(int x, int y, int type);
+
   void draw();
-  int getX() { return x; }
-  int getY() { return y; }
-  int getIsoX() { return iso_x; }
-  int getIsoY() { return iso_y; }
+  int getX() const { return x; }
+  int getY() const { return y; }
+  int getIsoX() const { return iso_x; }
+  int getIsoY() const { return iso_y; }
   void setType(int type) { this->type = type; }
-  void update();
-  int getType() { return type; }
+  int getType() const { return type; }
 
   // Check if x and y are in tile
-  int colliding(int x, int y, int width = 0, int height = 0);
-  int colliding_tight(int x, int y, int width = 0, int height = 0);
-  int colliding_loose(int x, int y, int width = 0, int height = 0);
-  int colliding_water(int x, int y, int width = 0, int height = 0);
+  bool colliding(int x, int y, int width = 0, int height = 0) const;
+  bool colliding_tight(int x, int y, int width = 0, int height = 0) const;
+  bool colliding_loose(int x, int y, int width = 0, int height = 0) const;
+  bool colliding_water(int x, int y, int width = 0, int height = 0) const;
 
  private:
-  ALLEGRO_BITMAP* sprite;
-  ALLEGRO_BITMAP* grid;
-  ALLEGRO_BITMAP* spritesheet_Water[4];
+  asw::Texture sprite;
+  asw::Texture grid;
+  asw::Texture spritesheet_Water[4];
+
   int frame = 0;
   int x;
   int y;
@@ -34,5 +33,3 @@ class Tile {
   int iso_x;
   int iso_y;
 };
-
-#endif  // TILE_H

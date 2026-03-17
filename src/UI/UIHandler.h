@@ -1,5 +1,4 @@
-#ifndef UIHANDLER_H
-#define UIHANDLER_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -11,8 +10,8 @@
 
 class UIHandler {
  public:
-  UIHandler(){};
-  virtual ~UIHandler(){};
+  UIHandler() {};
+  virtual ~UIHandler() {};
   void addElement(UIElement* newUIElement);
   void draw();
   void update();
@@ -22,17 +21,14 @@ class UIHandler {
 
   std::vector<UIElement*> getUIElements() { return ui_elements; }
 
-  void createButton(int x, int y, std::string newText, ALLEGRO_FONT* newFont);
-  void createAnchoredButton(std::string, ALLEGRO_FONT*, std::string, bool);
+  void createButton(int x, int y, std::string newText, asw::Font newFont);
+  void createAnchoredButton(std::string, asw::Font, std::string, bool);
   void createAnchoredButton(std::string,
-                            ALLEGRO_FONT*,
+                            asw::Font,
                             std::string,
                             std::string,
                             bool);
 
- protected:
  private:
   std::vector<UIElement*> ui_elements;
 };
-
-#endif  // UIHANDLER_H

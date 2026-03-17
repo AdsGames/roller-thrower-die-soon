@@ -6,9 +6,11 @@ void UIHandler::addElement(UIElement* newUIElement) {
 }
 
 bool UIHandler::isHovering() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++)
-    if (ui_elements.at(i)->hover())
+  for (unsigned int i = 0; i < ui_elements.size(); i++) {
+    if (ui_elements.at(i)->hover()) {
       return true;
+    }
+  }
 
   return false;
 }
@@ -16,38 +18,40 @@ bool UIHandler::isHovering() {
 void UIHandler::createButton(int newX,
                              int newY,
                              std::string newText,
-                             ALLEGRO_FONT* newFont) {
+                             asw::Font newFont) {
   Button* newButton = new Button(newX, newY, newText, newFont);
   ui_elements.push_back(newButton);
 }
 
 void UIHandler::createAnchoredButton(std::string newText,
-                                     ALLEGRO_FONT* newFont,
+                                     asw::Font newFont,
                                      std::string newAnchor,
                                      bool newJustification) {
   Button* newButton =
       new Button(0, getElementByText(newAnchor)->getY(), newText, newFont);
 
-  if (newJustification)
+  if (newJustification) {
     newButton->setX(getElementByText(newAnchor)->getRightX());
-  else
+  } else {
     newButton->setX(getElementByText(newAnchor)->getRightX());
+  }
 
   ui_elements.push_back(newButton);
 }
 
 void UIHandler::createAnchoredButton(std::string newText,
-                                     ALLEGRO_FONT* newFont,
+                                     asw::Font newFont,
                                      std::string newAnchor,
                                      std::string newId,
                                      bool newJustification) {
   Button* newButton = new Button(0, getElementByText(newAnchor)->getY(),
                                  newText, newId, newFont);
 
-  if (newJustification)
+  if (newJustification) {
     newButton->setX(getElementByText(newAnchor)->getRightX());
-  else
+  } else {
     newButton->setX(getElementByText(newAnchor)->getRightX());
+  }
 
   ui_elements.push_back(newButton);
 }
@@ -68,9 +72,11 @@ void UIHandler::createAnchoredButton(std::string newText,
 //}
 
 UIElement* UIHandler::getElementByText(std::string newText) {
-  for (unsigned int i = 0; i < ui_elements.size(); i++)
-    if (ui_elements.at(i)->getText() == newText)
+  for (unsigned int i = 0; i < ui_elements.size(); i++) {
+    if (ui_elements.at(i)->getText() == newText) {
       return ui_elements.at(i);
+    }
+  }
 
   // This will probably crash if the element is not found
   // So be careful
@@ -84,9 +90,11 @@ UIElement* UIHandler::getElementByText(std::string newText) {
 }
 
 UIElement* UIHandler::getElementById(std::string newId) {
-  for (unsigned int i = 0; i < ui_elements.size(); i++)
-    if (ui_elements.at(i)->getId() == newId)
+  for (unsigned int i = 0; i < ui_elements.size(); i++) {
+    if (ui_elements.at(i)->getId() == newId) {
       return ui_elements.at(i);
+    }
+  }
 
   // This will probably crash if the element is not found
   // So be careful
@@ -100,11 +108,13 @@ UIElement* UIHandler::getElementById(std::string newId) {
 }
 
 void UIHandler::draw() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++)
+  for (unsigned int i = 0; i < ui_elements.size(); i++) {
     ui_elements.at(i)->draw();
+  }
 }
 
 void UIHandler::update() {
-  for (unsigned int i = 0; i < ui_elements.size(); i++)
+  for (unsigned int i = 0; i < ui_elements.size(); i++) {
     ui_elements.at(i)->update();
+  }
 }

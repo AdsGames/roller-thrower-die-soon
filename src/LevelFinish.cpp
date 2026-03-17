@@ -1,11 +1,13 @@
 #include "LevelFinish.h"
 
-LevelFinish::LevelFinish() {
-  font = al_load_ttf_font("font/font.ttf", 18, 0);
-  font_big = al_load_ttf_font("font/font.ttf", 56, 0);
-  font_extra_thicc = al_load_ttf_font("font/font.ttf", 100, 0);
+#include <format>
 
-  cursor = tools::load_bitmap_ex("images/tweezersOpen.png");
+void LevelFinish::init() {
+  font = asw::assets::load_font("assets/font/font.ttf", 18);
+  font_big = asw::assets::load_font("assets/font/font.ttf", 56);
+  font_extra_thicc = asw::assets::load_font("assets/font/font.ttf", 100);
+
+  cursor = asw::assets::load_texture("assets/images/tweezersOpen.png");
 
   LevelFinishUI.addElement(new Button(200, 800, "Continue", font));
   //
@@ -16,62 +18,74 @@ LevelFinish::LevelFinish() {
   //    OptionsUI.addElement( new Button(  800, 200, "Level 4", font));
 }
 
-LevelFinish::~LevelFinish() {
-  // dtor
-}
-
-void LevelFinish::update() {
+void LevelFinish::update(float dt) {
   LevelFinishUI.update();
 
   if (LevelFinishUI.getElementByText("Continue")->clicked()) {
     game::level = 4;
-    set_next_state(STATE_OPTIONS);
+    manager.set_next_scene(ProgramStates::Options);
   }
 }
 
 void LevelFinish::draw() {
-  al_clear_to_color(al_map_rgb(50, 50, 50));
+  asw::draw::clear_color(asw::Color(50, 50, 50));
 
   LevelFinishUI.draw();
 
-  al_draw_textf(font_extra_thicc, al_map_rgb(200, 0, 0), 700, 20, 0,
-                "Carnage Report");
+  asw::draw::text(font_extra_thicc, "Carnage Report", asw::Vec2<float>(700, 20),
+                  asw::Color(200, 0, 0), asw::TextJustify::Left);
 
   int total_guests = 123;
 
-  if (game::level == 1)
+  if (game::level == 1) {
     total_guests = 10;
+  }
 
-  if (game::level == 2)
+  if (game::level == 2) {
     total_guests = 15;
+  }
 
-  if (game::level == 3)
+  if (game::level == 3) {
     total_guests = 70;
+  }
 
-  if (game::level == 4)
+  if (game::level == 4) {
     total_guests = 150;
+  }
 
-  if (game::level == 5 || game::level == 6)
+  if (game::level == 5 || game::level == 6) {
     total_guests = 200;
+  }
 
-  al_draw_textf(font_big, al_map_rgb(150, 150, 150), 200, 200, 0,
-                "Total guests:%i", total_guests);
-  al_draw_textf(font_big, al_map_rgb(150, 0, 0), 200, 260, 0,
-                "Total drowned:%i", game::guests_died_falling);
-  al_draw_textf(font_big, al_map_rgb(150, 0, 0), 200, 320, 0,
-                "Total killed by octopi:%i", game::guests_died_enemies);
-  al_draw_textf(font_big, al_map_rgb(0, 150, 0), 200, 380, 0,
-                "Total rescued:%i", game::guests_rescued);
-  al_draw_textf(font_big, al_map_rgb(0, 150, 0), 200, 440, 0, "Final cash:%i",
-                game::money);
+  asw::draw::text(font_big, std::format("Total guests:{}", total_guests),
+                  asw::Vec2<float>(200, 200), asw::Color(150, 150, 150),
+                  asw::TextJustify::Left);
+  asw::draw::text(font_big,
+                  std::format("Total drowned:{}", game::guests_died_falling),
+                  asw::Vec2<float>(200, 260), asw::Color(150, 0, 0),
+                  asw::TextJustify::Left);
+  asw::draw::text(
+      font_big,
+      std::format("Total killed by octopi:{}", game::guests_died_enemies),
+      asw::Vec2<float>(200, 320), asw::Color(150, 0, 0),
+      asw::TextJustify::Left);
+  asw::draw::text(font_big,
+                  std::format("Total rescued:{}", game::guests_rescued),
+                  asw::Vec2<float>(200, 380), asw::Color(0, 150, 0),
+                  asw::TextJustify::Left);
+  asw::draw::text(font_big, std::format("Final cash:{}", game::money),
+                  asw::Vec2<float>(200, 440), asw::Color(0, 150, 0),
+                  asw::TextJustify::Left);
 
   float total_lived = game::guests_rescued;
   float percent = (total_lived / total_guests) * 100;
 
-  al_draw_textf(font_extra_thicc, al_map_rgb(200, 50, 50), 1200, 300, 0,
-                "%.1f%%", percent);
-  al_draw_textf(font, al_map_rgb(200, 50, 50), 1250, 420, 0,
-                "of guests survived.");
-  al_draw_bitmap(cursor, mouseListener::mouse_x - 8,
-                 mouseListener::mouse_y - 56, 0);
+  asw::draw::text(font_extra_thicc, std::format("{:.1f}%", percent),
+                  asw::Vec2<float>(1200, 300), asw::Color(200, 50, 50),
+                  asw::TextJustify::Left);
+  asw::draw::text(font, "of guests survived.", asw::Vec2<float>(1250, 420),
+                  asw::Color(200, 50, 50), asw::TextJustify::Left);
+  asw::draw::sprite(cursor,
+                    asw::Vec2<float>(asw::input::mouse.position.x - 8,
+                                     asw::input::mouse.position.y - 56));
 }

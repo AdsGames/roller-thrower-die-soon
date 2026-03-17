@@ -1,12 +1,6 @@
 #include "TileType.h"
 
-TileType::TileType(int id, ALLEGRO_BITMAP* image) {
-  image = nullptr;
-
+TileType::TileType(int id, asw::Texture image) {
   this->image = image;
   this->id = id;
-}
-
-TileType::~TileType() {
-  al_destroy_bitmap(image);
 }

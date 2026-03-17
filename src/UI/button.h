@@ -1,43 +1,24 @@
-#ifndef BUTTON_H
-#define BUTTON_H
+#pragma once
 
 #include "UIElement.h"
 
 class Button : public UIElement {
  public:
-  Button(int x, int y, std::string text, ALLEGRO_FONT* button_font);
+  Button(int x, int y, std::string text, asw::Font button_font);
+  Button(int x, int y, std::string text, std::string id, asw::Font button_font);
+  Button(int x, int y, std::string text, asw::Font button_font, int w, int h);
   Button(int x,
          int y,
          std::string text,
-         std::string id,
-         ALLEGRO_FONT* button_font);
-  Button(int x,
-         int y,
-         std::string text,
-         ALLEGRO_FONT* button_font,
-         int w,
-         int h);
-  Button(int x,
-         int y,
-         std::string text,
-         ALLEGRO_BITMAP* newImage,
+         asw::Texture newImage,
          float newRotation);
-  Button(int x, int y, std::string id, ALLEGRO_BITMAP* newImage);
+  Button(int x, int y, std::string id, asw::Texture newImage);
 
-  Button(){};
-
-  // void setWidthTo100(){width=100;}
+  Button() = default;
+  virtual ~Button() = default;
 
   void setWidth(int newWidth) { width = newWidth; }
   void setHeight(int newHeight) { height = newHeight; }
 
-  virtual void draw();
-
-  // Button();
-  virtual ~Button();
-
- protected:
- private:
+  void draw() override;
 };
-
-#endif  // BUTTON_H

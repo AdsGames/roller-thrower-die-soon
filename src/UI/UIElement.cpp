@@ -6,8 +6,8 @@ UIElement::UIElement() {
 }
 void UIElement::setDefaults() {
   this->alpha = 255;
-  this->background_colour = al_map_rgba(200, 200, 200, alpha);
-  this->text_colour = al_map_rgba(0, 0, 0, alpha);
+  this->background_colour = asw::Color(200, 200, 200, alpha);
+  this->text_colour = asw::Color(0, 0, 0, alpha);
   this->x = 0;
   this->y = 0;
   this->width = 0;
@@ -30,10 +30,7 @@ void UIElement::setDefaults() {
   this->disabled_hover_effect = false;
 }
 
-UIElement::UIElement(int x,
-                     int y,
-                     std::string text,
-                     ALLEGRO_FONT* UIElement_font) {
+UIElement::UIElement(int x, int y, std::string text, asw::Font UIElement_font) {
   setDefaults();
   // Literally this
   this->x = x;
@@ -42,8 +39,9 @@ UIElement::UIElement(int x,
   this->UIElement_font = UIElement_font;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str());
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x;
+    this->height = text_size.y;
   } else {
     this->width = 10;
     this->height = 10;
@@ -54,7 +52,7 @@ UIElement::UIElement(int x,
                      int y,
                      std::string text,
                      std::string id,
-                     ALLEGRO_FONT* UIElement_font) {
+                     asw::Font UIElement_font) {
   setDefaults();
   // Literally this
   this->x = x;
@@ -64,34 +62,30 @@ UIElement::UIElement(int x,
   this->UIElement_font = UIElement_font;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str());
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x;
+    this->height = text_size.y;
   } else {
     this->width = 10;
     this->height = 10;
   }
 }
 
-// Destruct
-UIElement::~UIElement() {
-  if (image != nullptr)
-    al_destroy_bitmap(image);
-}
-
 // Sets an image
-void UIElement::setImage(ALLEGRO_BITMAP* image) {
+void UIElement::setImage(asw::Texture image) {
   this->image = image;
-  this->width = al_get_bitmap_width(this->image);
-  this->height = al_get_bitmap_height(this->image);
+  this->width = this->image->w;
+  this->height = this->image->h;
 }
 
 // Set new font
-void UIElement::setFont(ALLEGRO_FONT* font) {
+void UIElement::setFont(asw::Font font) {
   this->UIElement_font = font;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str());
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x;
+    this->height = text_size.y;
   }
 }
 void UIElement::toggleVisibility() {
@@ -108,14 +102,17 @@ void UIElement::update() {
   mouse_released = false;
 
   if (active) {
-    if (hovering && old_mouse_down && !mouseListener::mouse_button & 1) {
+    if (hovering && old_mouse_down &&
+        !asw::input::get_mouse_button(asw::input::MouseButton::Left)) {
       mouse_released = true;
     }
 
-    old_mouse_down = hovering && mouseListener::mouse_button & 1;
-    hovering =
-        mouseListener::mouse_x > x && mouseListener::mouse_x < x + getWidth() &&
-        mouseListener::mouse_y > y && mouseListener::mouse_y < y + getHeight();
+    old_mouse_down =
+        hovering && asw::input::get_mouse_button(asw::input::MouseButton::Left);
+    hovering = asw::input::mouse.position.x > x &&
+               asw::input::mouse.position.x < x + getWidth() &&
+               asw::input::mouse.position.y > y &&
+               asw::input::mouse.position.y < y + getHeight();
   } else {
     hovering = false;
   }
@@ -128,14 +125,13 @@ bool UIElement::hover() {
 
 // True if clicked
 bool UIElement::clicked() {
-  return hovering && mouseListener::mouse_pressed & 1;
-}
-bool UIElement::held() {
-  return hovering && mouseListener::mouse_button & 1;
+  return hovering &&
+         asw::input::get_mouse_button_down(asw::input::MouseButton::Left);
 }
 
-bool UIElement::mouseReleased() {
-  return mouse_released;
+bool UIElement::held() {
+  return hovering &&
+         asw::input::get_mouse_button(asw::input::MouseButton::Left);
 }
 
 void UIElement::draw() {
@@ -143,20 +139,21 @@ void UIElement::draw() {
     // std::cout<<"How do I actually oop?\n";
     // Backdrop
     if (visible_background) {
-      al_draw_filled_rectangle(
-          x, y, x + width + padding_x * 2, y + height + padding_y * 2,
-          al_map_rgba(200 + 20 * hovering, 200 + 20 * hovering,
-                      200 + 20 * hovering, alpha));
-      al_draw_rectangle(x, y, x + width + padding_x * 2,
-                        y + height + padding_y * 2, al_map_rgba(0, 0, 0, alpha),
-                        2);
+      asw::draw::rect_fill(
+          asw::Quad<float>(x, y, width + padding_x * 2, height + padding_y * 2),
+          asw::Color(200 + 20 * hovering, 200 + 20 * hovering,
+                     200 + 20 * hovering, alpha));
+      asw::draw::rect(
+          asw::Quad<float>(x, y, width + padding_x * 2, height + padding_y * 2),
+          asw::Color(0, 0, 0, alpha));
     }
 
     // Text
     if (UIElement_font != nullptr) {
       if (justification == 0) {
-        al_draw_text(UIElement_font, text_colour, x + padding_x, y + padding_y,
-                     0, text.c_str());
+        asw::draw::text(UIElement_font, text,
+                        asw::Vec2<float>(x + padding_x, y + padding_y),
+                        text_colour, asw::TextJustify::Left);
       }
 
       if (justification == 1) {
@@ -167,14 +164,17 @@ void UIElement::draw() {
         text_y = y + padding_y -
                  (tools::get_text_height(UIElement_font, text) - height) / 2;
 
-        al_draw_textf(UIElement_font, text_colour, text_x,
-                      (text_y - tools::get_text_offset_y(UIElement_font, text)),
-                      justification, text.c_str());
+        asw::draw::text(
+            UIElement_font, text,
+            asw::Vec2<float>(text_x, text_y - tools::get_text_offset_y(
+                                                  UIElement_font, text)),
+            text_colour, asw::TextJustify::Center);
       }
     }
 
     // Image if avail
-    if (image != nullptr)
-      al_draw_bitmap(image, x + padding_x, y + padding_y, 0);
+    if (image != nullptr) {
+      asw::draw::sprite(image, asw::Vec2<float>(x + padding_x, y + padding_y));
+    }
   }
 }

@@ -1,33 +1,22 @@
 #include "menu.h"
 
-// Init menu
-
-// ALLEGRO_SAMPLE *menu::menu_music = nullptr;
-
-menu::menu() {
-  menu_font = al_load_ttf_font("fonts/munro.ttf", 18, 0);
-
-  splash = tools::load_bitmap_ex("images/splash.png");
-  loading = tools::load_bitmap_ex("images/loading.png");
+void menu::init() {
+  menu_font = asw::assets::load_font("assets/font/font.ttf", 18);
+  splash = asw::assets::load_texture("assets/images/splash.png");
+  loading = asw::assets::load_texture("assets/images/loading.png");
 }
 
 // Draw images to screen
 void menu::draw() {
-  al_draw_bitmap(splash, 0, 0, 0);
-
-  if (loadingb) {
-    // al_draw_bitmap(loading,0,0,0);
-  }
+  asw::draw::sprite(splash, asw::Vec2<float>(0, 0));
 }
 
-void menu::update() {
-  if (keyListener::keyReleased[ALLEGRO_KEY_ESCAPE])
-    set_next_state(STATE_EXIT);
+void menu::update(float dt) {
+  if (asw::input::get_key_down(asw::input::Key::Escape)) {
+    asw::core::exit = true;
+  }
 
-  if (loadingb)
-    set_next_state(STATE_OPTIONS);
-
-  if (keyListener::anyKeyPressed && !keyListener::key[ALLEGRO_KEY_ESCAPE]) {
-    loadingb = true;
+  if (asw::input::keyboard.any_pressed) {
+    manager.set_next_scene(ProgramStates::Options);
   }
 }

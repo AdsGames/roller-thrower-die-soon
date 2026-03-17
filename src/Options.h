@@ -1,40 +1,29 @@
-#ifndef OPTIONS_H
-#define OPTIONS_H
+#pragma once
 
 #include <string>
 
 #include "UI/UIElement.h"
 #include "UI/UIHandler.h"
 #include "UI/button.h"
-#include "allegro5/allegro_font.h"
-#include "allegro5/allegro_ttf.h"
 #include "state.h"
 
 #include "game.h"
-#include "listeners/joystickListener.h"
-#include "listeners/keyListener.h"
-#include "rapidxml/rapidxml.hpp"
-#include "rapidxml/rapidxml_print.hpp"
 
-class Options : public state {
+class Options : public asw::scene::Scene<ProgramStates> {
  public:
-  Options();
-  virtual ~Options();
+  using asw::scene::Scene<ProgramStates>::Scene;
 
-  void draw();
-  void update();
+  void init() override;
+  void draw() override;
+  void update(float dt) override;
 
  private:
-  ALLEGRO_FONT* font;
-  ALLEGRO_FONT* font_big;
+  asw::Font font;
+  asw::Font font_big;
 
   UIHandler OptionsUI;
 
-  ALLEGRO_BITMAP* cursor;
-  ALLEGRO_BITMAP* background;
-  ALLEGRO_BITMAP* load;
-
-  bool loading = false;
+  asw::Texture cursor;
+  asw::Texture background;
+  asw::Texture load;
 };
-
-#endif  // OPTIONS_H

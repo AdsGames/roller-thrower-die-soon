@@ -1,23 +1,21 @@
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#pragma once
 
-#include "allegro5/allegro.h"
+#include <asw/asw.h>
+
 #include "tools.h"
 
 class Particle {
  public:
-  Particle(int, int, int);
-  virtual ~Particle();
-  bool update();
-  void draw();
+  Particle(int x, int y, int type);
 
- protected:
+  void update();
+  void draw();
+  bool is_dead() const { return lifetime > 60; }
+
  private:
-  ALLEGRO_BITMAP* sprite;
+  asw::Texture sprite;
   int x;
   int y;
   int lifetime = 0;
   int type = 1;
 };
-
-#endif  // PARTICLE_H

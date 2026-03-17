@@ -3,16 +3,11 @@
  * A.D.S. Games
  * 05/05/2017
  **/
-#ifndef GAME_H
-#define GAME_H
+#pragma once
 
 #include <vector>
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_primitives.h>
-#include <allegro5/allegro_ttf.h>
+#include <asw/asw.h>
 
 #include "state.h"
 
@@ -24,15 +19,14 @@
 #include "UI/UIHandler.h"
 #include "tools.h"
 
-class game : public state {
+class game : public asw::scene::Scene<ProgramStates> {
  public:
-  // Construct / destruct;
-  game();
-  ~game(){};
+  using asw::scene::Scene<ProgramStates>::Scene;
 
   // Override parent
-  void update();
-  void draw();
+  void init() override;
+  void update(float dt) override;
+  void draw() override;
 
   static int level;
   static int guests_rescued;
@@ -40,54 +34,45 @@ class game : public state {
   static int guests_died_falling;
   static int money;
 
-  // Create tile at coordinate
-  Tile* createTile(int, int, int);
-
-  // Create guest at coordinate
-  Guest* createGuest(int, int);
-  Cart* createCart(int, int);
-  Particle* createParticle(int, int, int urmum);
-
-  UIHandler gameUI;
-
-  // Test mode
-  std::vector<Tile*> gameTiles;
-  std::vector<Guest*> gameGuests;
-  std::vector<Enemy*> gameEnemies;
-  std::vector<Particle*> gameParticles;
-
-  // Guest selected by grabber
-
-  Guest* selectedGuest = nullptr;
-
  private:
   // Load map from text
   void load_level(std::string filename);
 
+  // Entities
+  std::vector<Tile> gameTiles;
+  std::vector<Guest> gameGuests;
+  std::vector<Enemy> gameEnemies;
+  std::vector<Particle> gameParticles;
+
+  // UI
+  UIHandler gameUI;
+
+  // Guest selected by grabber
+  Guest* selectedGuest = nullptr;
+
   // Images
-  ALLEGRO_BITMAP* tile;
-  ALLEGRO_BITMAP* coaster;
-  ALLEGRO_BITMAP* coaster_small;
+  asw::Texture tile;
+  asw::Texture coaster;
+  asw::Texture coaster_small;
 
-  ALLEGRO_BITMAP* path[4];
-  ALLEGRO_BITMAP* entrance_back;
-  ALLEGRO_BITMAP* entrance_front;
-  ALLEGRO_BITMAP* entrance_front_transparent;
+  asw::Texture path[4];
+  asw::Texture entrance_back;
+  asw::Texture entrance_front;
+  asw::Texture entrance_front_transparent;
 
-  ALLEGRO_BITMAP* cursor_open;
-  ALLEGRO_BITMAP* cursor_closed;
-  ALLEGRO_BITMAP* path_hover;
+  asw::Texture cursor_open;
+  asw::Texture cursor_closed;
+  asw::Texture path_hover;
 
-  ALLEGRO_BITMAP* level_1_help;
-  ALLEGRO_BITMAP* level_2_help;
-  ALLEGRO_BITMAP* level_3_help;
-  ALLEGRO_BITMAP* level_4_help;
+  asw::Texture level_1_help;
+  asw::Texture level_2_help;
+  asw::Texture level_3_help;
+  asw::Texture level_4_help;
 
-  ALLEGRO_FONT* font;
-  ALLEGRO_FONT* font_small;
+  asw::Font font;
+  asw::Font font_small;
 
   int frame = 0;
-  int fart_crame = 0;
   int guest_spawn = 50;
   bool started = 0;
   bool finished = false;
@@ -104,5 +89,3 @@ class game : public state {
   float x_velocity;
   float y_velocity;
 };
-
-#endif  // GAME_H

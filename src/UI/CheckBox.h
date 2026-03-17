@@ -1,21 +1,18 @@
-#ifndef CHECKBOX_H
-#define CHECKBOX_H
+#pragma once
 
 #include "UIElement.h"
 
 class CheckBox : public UIElement {
  public:
   CheckBox();
-  CheckBox(int, int, std::string, ALLEGRO_FONT*);
-  virtual ~CheckBox();
-  void update() override;
-  virtual void draw();
-  bool getChecked() { return checked; }
+  CheckBox(int, int, std::string, asw::Font);
+  virtual ~CheckBox() = default;
 
- protected:
+  void update() override;
+  void draw() override;
+  bool getChecked() override { return checked; }
+
  private:
   int checkbox_width = 20;
   bool checked;
 };
-
-#endif  // CHECKBOX_H

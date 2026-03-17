@@ -1,41 +1,29 @@
-#ifndef LEVELFINISH_H
-#define LEVELFINISH_H
+#pragma once
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_ttf.h>
+#include <asw/asw.h>
 
 #include "tools.h"
 
 #include "UI/UIElement.h"
 #include "UI/UIHandler.h"
 #include "UI/button.h"
-#include "allegro5/allegro_font.h"
-#include "allegro5/allegro_ttf.h"
 
 #include "game.h"
-#include "listeners/joystickListener.h"
-#include "listeners/keyListener.h"
-#include "rapidxml/rapidxml.hpp"
-#include "rapidxml/rapidxml_print.hpp"
 #include "state.h"
 
-class LevelFinish : public state {
+class LevelFinish : public asw::scene::Scene<ProgramStates> {
  public:
-  LevelFinish();
-  virtual ~LevelFinish();
+  using asw::scene::Scene<ProgramStates>::Scene;
 
-  void draw();
-  void update();
+  void init() override;
+  void draw() override;
+  void update(float dt) override;
 
- protected:
  private:
   UIHandler LevelFinishUI;
 
-  ALLEGRO_BITMAP* cursor;
-  ALLEGRO_FONT* font;
-  ALLEGRO_FONT* font_big;
-  ALLEGRO_FONT* font_extra_thicc;
+  asw::Texture cursor;
+  asw::Font font;
+  asw::Font font_big;
+  asw::Font font_extra_thicc;
 };
-
-#endif  // LEVELFINISH_H

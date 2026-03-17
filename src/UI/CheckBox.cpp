@@ -3,10 +3,7 @@
 CheckBox::CheckBox() {
   // ctor
 }
-CheckBox::CheckBox(int newX,
-                   int newY,
-                   std::string newText,
-                   ALLEGRO_FONT* newFont) {
+CheckBox::CheckBox(int newX, int newY, std::string newText, asw::Font newFont) {
   this->alpha = 255;
 
   this->checkbox_width = 20;
@@ -31,31 +28,31 @@ CheckBox::CheckBox(int newX,
   this->checked = false;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str()) +
-                  checkbox_width + padding_x;
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x + checkbox_width + padding_x;
+    this->height = text_size.y;
   } else {
     this->width = 10;
     this->height = 10;
   }
 }
 
-CheckBox::~CheckBox() {
-  // dtor
-}
 void CheckBox::update() {
   mouse_released = false;
 
   if (active) {
-    if (hovering && old_mouse_down && !mouseListener::mouse_button & 1) {
+    if (hovering && old_mouse_down &&
+        !get_mouse_button(asw::input::MouseButton::Left)) {
       mouse_released = true;
       checked = !checked;
     }
 
-    old_mouse_down = hovering && mouseListener::mouse_button & 1;
-    hovering =
-        mouseListener::mouse_x > x && mouseListener::mouse_x < x + getWidth() &&
-        mouseListener::mouse_y > y && mouseListener::mouse_y < y + getHeight();
+    old_mouse_down =
+        hovering && get_mouse_button(asw::input::MouseButton::Left);
+    hovering = asw::input::mouse.position.x > x &&
+               asw::input::mouse.position.x < x + getWidth() &&
+               asw::input::mouse.position.y > y &&
+               asw::input::mouse.position.y < y + getHeight();
   } else {
     hovering = false;
   }
@@ -64,34 +61,40 @@ void CheckBox::update() {
 void CheckBox::draw() {
   if (visible) {
     // Backdrop
-    al_draw_filled_rectangle(
-        x, y, x + width + padding_x * 2, y + height + padding_y * 2,
-        al_map_rgba(200 + 20 * hovering, 200 + 20 * hovering,
-                    200 + 20 * hovering, alpha));
-    al_draw_rectangle(x, y, x + width + padding_x * 2,
-                      y + height + padding_y * 2, al_map_rgba(0, 0, 0, alpha),
-                      2);
+    asw::draw::rect_fill(
+        asw::Quad<float>(x, y, width + padding_x * 2, height + padding_y * 2),
+        asw::Color(200 + 20 * hovering, 200 + 20 * hovering,
+                   200 + 20 * hovering, alpha));
+
+    asw::draw::rect(
+        asw::Quad<float>(x, y, width + padding_x * 2, height + padding_y * 2),
+        asw::Color(0, 0, 0, alpha));
 
     // Checkbox
-    al_draw_filled_rectangle(
-        x + padding_x, y + padding_y, x + padding_x + checkbox_width,
-        y + padding_y + checkbox_width,
-        al_map_rgba(200 + 20 * hovering, 200 + 20 * hovering,
-                    200 + 20 * hovering, alpha));
-    al_draw_rectangle(
-        x + padding_x, y + padding_y, x + padding_x + checkbox_width,
-        y + padding_y + checkbox_width, al_map_rgba(0, 0, 0, alpha), 2);
+    asw::draw::rect_fill(
+        asw::Quad<float>(x + padding_x, y + padding_y, checkbox_width,
+                         checkbox_width),
+        asw::Color(200 + 20 * hovering, 200 + 20 * hovering,
+                   200 + 20 * hovering, alpha));
+    asw::draw::rect(
+        asw::Quad<float>(x + padding_x, y + padding_y, checkbox_width,
+                         checkbox_width),
+        asw::Color(0, 0, 0, alpha));
 
-    if (checked)
-      al_draw_filled_rectangle(x + padding_x + 2, y + padding_y + 2,
-                               x + padding_x + checkbox_width - 2,
-                               y + padding_y + checkbox_width - 2,
-                               al_map_rgba(0, 0, 0, alpha));
+    if (checked) {
+      asw::draw::rect_fill(
+          asw::Quad<float>(x + padding_x + 2, y + padding_y + 2,
+                           checkbox_width - 4, checkbox_width - 4),
+          asw::Color(0, 0, 0, alpha));
+    }
 
     // Text
-    if (UIElement_font != nullptr)
-      al_draw_text(UIElement_font, al_map_rgba(0, 0, 0, alpha),
-                   x + padding_x + checkbox_width + padding_x, y + padding_y, 0,
-                   text.c_str());
+    if (UIElement_font != nullptr) {
+      asw::draw::text(
+          UIElement_font, text,
+          asw::Vec2<float>(x + padding_x + checkbox_width + padding_x,
+                           y + padding_y),
+          asw::Color(0, 0, 0, alpha), asw::TextJustify::Left);
+    }
   }
 }

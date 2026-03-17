@@ -1,28 +1,21 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#pragma once
 
-#include "allegro5/allegro.h"
-#include "allegro5/allegro_ttf.h"
-#include "string"
+#include <string>
+#include <vector>
+
 #include "tools.h"
-#include "vector"
 
 class Message {
  public:
-  Message();
-  virtual ~Message();
+  Message() = default;
+
   static void update();
   static void draw();
   static void load();
   static int message_count;
   static void sendMessage(std::string newMessage);
-  static ALLEGRO_FONT* font;
+  static asw::Font font;
   static int time;
   static std::vector<std::string> messageList;
   static void clear();
-
- protected:
- private:
 };
-
-#endif  // MESSAGE_H

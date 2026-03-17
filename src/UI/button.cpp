@@ -3,7 +3,7 @@
 Button::Button(int x,
                int y,
                std::string text,
-               ALLEGRO_BITMAP* image,
+               asw::Texture image,
                float newRotation) {
   setDefaults();
 
@@ -18,8 +18,8 @@ Button::Button(int x,
   this->UIElement_font = UIElement_font;
 
   if (image != nullptr) {
-    this->width = al_get_bitmap_width(image);
-    this->height = al_get_bitmap_height(image);
+    this->width = image->w;
+    this->height = image->h;
   } else {
     std::cout << "WARNING: Button " << text
               << " has been given a nullptr image!\n";
@@ -29,7 +29,7 @@ Button::Button(int x,
   this->padding_y = 0;
 }
 
-Button::Button(int x, int y, std::string id, ALLEGRO_BITMAP* image) {
+Button::Button(int x, int y, std::string id, asw::Texture image) {
   setDefaults();
 
   // Naming schemes are frickin' hard
@@ -42,8 +42,8 @@ Button::Button(int x, int y, std::string id, ALLEGRO_BITMAP* image) {
   this->id = id;
 
   if (image != nullptr) {
-    this->width = al_get_bitmap_width(image);
-    this->height = al_get_bitmap_height(image);
+    this->width = image->w;
+    this->height = image->h;
   } else {
     std::cout << "WARNING: Button " << text
               << " has been given a nullptr image!\n";
@@ -53,7 +53,7 @@ Button::Button(int x, int y, std::string id, ALLEGRO_BITMAP* image) {
   this->padding_y = 2;
 }
 
-Button::Button(int x, int y, std::string text, ALLEGRO_FONT* UIElement_font) {
+Button::Button(int x, int y, std::string text, asw::Font UIElement_font) {
   setDefaults();
 
   this->bitmap_rotation_angle = 0;
@@ -65,8 +65,9 @@ Button::Button(int x, int y, std::string text, ALLEGRO_FONT* UIElement_font) {
   this->UIElement_font = UIElement_font;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str());
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x;
+    this->height = text_size.y;
   } else {
     this->width = 10;
     this->height = 10;
@@ -76,7 +77,7 @@ Button::Button(int x,
                int y,
                std::string text,
                std::string id,
-               ALLEGRO_FONT* UIElement_font) {
+               asw::Font UIElement_font) {
   setDefaults();
 
   this->bitmap_rotation_angle = 0;
@@ -89,8 +90,9 @@ Button::Button(int x,
   this->UIElement_font = UIElement_font;
 
   if (UIElement_font != nullptr) {
-    this->width = al_get_text_width(UIElement_font, text.c_str());
-    this->height = al_get_font_line_height(UIElement_font);
+    const auto text_size = asw::util::get_text_size(UIElement_font, text);
+    this->width = text_size.x;
+    this->height = text_size.y;
   } else {
     this->width = 10;
     this->height = 10;
@@ -100,7 +102,7 @@ Button::Button(int x,
 Button::Button(int x,
                int y,
                std::string text,
-               ALLEGRO_FONT* UIElement_font,
+               asw::Font UIElement_font,
                int newWidth,
                int newHeight) {
   this->bitmap_rotation_angle = 0;
@@ -119,42 +121,43 @@ Button::Button(int x,
   this->height = newHeight;
 }
 
-Button::~Button() {
-  // dtor
-}
 void Button::draw() {
   if (visible) {
     // Backdrop
 
     // This hover colour has more lines than the whole game loop
-    int new_r = tools::negative_clamp_thing(
+    const int new_r = tools::negative_clamp_thing(
         0, 255, (int)((background_colour.r * 255) + (40 * hovering)));
-    int new_g = tools::negative_clamp_thing(
+    const int new_g = tools::negative_clamp_thing(
         0, 255, (int)((background_colour.g * 255) + (40 * hovering)));
-    int new_b = tools::negative_clamp_thing(
+    const int new_b = tools::negative_clamp_thing(
         0, 255, (int)((background_colour.b * 255) + (40 * hovering)));
 
-    ALLEGRO_COLOR hover_colour = al_map_rgba(new_r, new_g, new_b, alpha);
+    auto hover_colour = asw::Color(new_r, new_g, new_b, alpha);
 
-    if (disabled_hover_effect)
+    if (disabled_hover_effect) {
       hover_colour = background_colour;
+    }
 
     if (visible_background) {
-      if (!transparent_cell_fill)
-        al_draw_filled_rectangle(x, y, x + width + padding_x * 2,
-                                 y + height + padding_y * 2, hover_colour);
+      if (!transparent_cell_fill) {
+        asw::draw::rect_fill(asw::Quad<float>(x, y, width + padding_x * 2,
+                                              height + padding_y * 2),
+                             hover_colour);
+      }
 
-      al_draw_rectangle(x, y, x + width + padding_x * 2,
-                        y + height + padding_y * 2, al_map_rgba(0, 0, 0, alpha),
-                        outline_thickness);
+      asw::draw::rect(
+          asw::Quad<float>(x, y, width + padding_x * 2, height + padding_y * 2),
+          asw::Color(0, 0, 0, alpha));
     }
 
     // Text
 
     if (UIElement_font != nullptr) {
       if (justification == 0) {
-        al_draw_text(UIElement_font, text_colour, x + padding_x, y + padding_y,
-                     0, text.c_str());
+        asw::draw::text(UIElement_font, text,
+                        asw::Vec2<float>(x + padding_x, y + padding_y),
+                        text_colour, asw::TextJustify::Left);
       }
 
       if (justification == 1) {
@@ -165,20 +168,25 @@ void Button::draw() {
         text_y = y + padding_y -
                  (tools::get_text_height(UIElement_font, text) - height) / 2;
 
-        al_draw_textf(UIElement_font, text_colour, text_x,
-                      (text_y - tools::get_text_offset_y(UIElement_font, text)),
-                      justification, text.c_str());
+        asw::draw::text(
+            UIElement_font, text,
+            asw::Vec2<float>(text_x, text_y - tools::get_text_offset_y(
+                                                  UIElement_font, text)),
+            text_colour, asw::TextJustify::Center);
       }
     }
 
     // Image if avail
     if (image != nullptr) {
-      if (bitmap_rotation_angle == 0)
-        al_draw_bitmap(image, x + padding_x, y + padding_y, 0);
-      else
-        al_draw_rotated_bitmap(
-            image, width / 2, width / 2, x + padding_x + (width / 2),
-            y + padding_y + (height / 2), bitmap_rotation_angle, 0);
+      if (bitmap_rotation_angle == 0) {
+        asw::draw::sprite(image,
+                          asw::Vec2<float>(x + padding_x, y + padding_y));
+      } else {
+        asw::draw::rotate_sprite(image,
+                                 asw::Vec2<float>(x + padding_x + (width / 2),
+                                                  y + padding_y + (height / 2)),
+                                 bitmap_rotation_angle);
+      }
     }
   }
 }

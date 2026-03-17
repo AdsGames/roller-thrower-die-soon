@@ -1,20 +1,18 @@
-#ifndef CART_H
-#define CART_H
+#pragma once
+
+#include <asw/asw.h>
 
 #include "Guest.h"
 
 class Cart : public Guest {
  public:
-  Cart(int, int);
-  virtual ~Cart();
-  void update();
-  void draw();
+  Cart(int x, int y);
 
- protected:
+  void update() override;
+  void draw() const override;
+
  private:
   float accel;
   float spin;
-  ALLEGRO_BITMAP* cart;
+  asw::Texture cart;
 };
-
-#endif  // CART_H

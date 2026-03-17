@@ -1,11 +1,5 @@
 #include "tools.h"
 
-std::string tools::convertIntToString(int number) {
-  std::stringstream ss;
-  ss << number;
-  return ss.str();
-}
-
 // Convert string to int
 int tools::convertStringToInt(std::string newString) {
   int result;
@@ -14,119 +8,48 @@ int tools::convertStringToInt(std::string newString) {
 }
 
 bool tools::clicked(int x_1, int x_2, int y_1, int y_2) {
-  if (mouseListener::mouse_button & 1 && x_1 < mouseListener::mouse_x &&
-      x_2 > mouseListener::mouse_x && y_1 < mouseListener::mouse_y &&
-      y_2 > mouseListener::mouse_y)
-    return true;
-
-  return false;
+  return (asw::input::get_mouse_button(asw::input::MouseButton::Left) &&
+          x_1 < asw::input::mouse.position.x &&
+          x_2 > asw::input::mouse.position.x &&
+          y_1 < asw::input::mouse.position.y &&
+          y_2 > asw::input::mouse.position.y);
 }
 
 // A function to streamline error reporting in file loading
 void tools::abort_on_error(std::string message, std::string title) {
-  al_show_native_message_box(nullptr, "Error", title.c_str(), message.c_str(),
-                             nullptr, ALLEGRO_MESSAGEBOX_ERROR);
-  exit(-1);
+  asw::util::abort_on_error(message);
 }
 
-int tools::get_text_offset_x(ALLEGRO_FONT* newFont, std::string newText) {
-  int text_width = 0;
-  int text_height = 0;
-  int text_offset_x;
-  int text_offset_y;
+int tools::get_text_offset_x(asw::Font newFont, std::string newText) {
+  // int text_width = 0;
+  // int text_height = 0;
+  // int text_offset_x;
+  // int text_offset_y;
 
-  al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
-                         &text_offset_y, &text_width, &text_height);
+  // al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
+  //                        &text_offset_y, &text_width, &text_height);
 
-  return text_offset_x;
+  return 0;
 }
 
-int tools::get_text_offset_y(ALLEGRO_FONT* newFont, std::string newText) {
-  int text_width = 0;
-  int text_height = 0;
-  int text_offset_x;
-  int text_offset_y;
+int tools::get_text_offset_y(asw::Font newFont, std::string newText) {
+  // int text_width = 0;
+  // int text_height = 0;
+  // int text_offset_x;
+  // int text_offset_y;
 
-  al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
-                         &text_offset_y, &text_width, &text_height);
+  // al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
+  //                        &text_offset_y, &text_width, &text_height);
 
-  return text_offset_y;
+  return 0;
 }
 
-int tools::get_text_width(ALLEGRO_FONT* newFont, std::string newText) {
-  int text_width = 0;
-  int text_height = 0;
-  int text_offset_x;
-  int text_offset_y;
-
-  al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
-                         &text_offset_y, &text_width, &text_height);
-
-  return text_width;
+int tools::get_text_width(asw::Font newFont, std::string newText) {
+  return asw::util::get_text_size(newFont, newText).x;
 }
 
-int tools::get_text_height(ALLEGRO_FONT* newFont, std::string newText) {
-  int text_width = 0;
-  int text_height = 0;
-  int text_offset_x;
-  int text_offset_y;
-
-  al_get_text_dimensions(newFont, newText.c_str(), &text_offset_x,
-                         &text_offset_y, &text_width, &text_height);
-
-  return text_height;
-}
-
-// Load sample if exits, or throw error
-ALLEGRO_SAMPLE* tools::load_sample_ex(std::string file) {
-  // std::cout<<"Loading sound "<<file<<".";
-
-  // Check if file exists
-  std::ifstream f(file.c_str());
-
-  if (!f.good())
-    abort_on_error(
-        std::string("Cannot find sample " + file +
-                    "\nYour file is gone and there's nothing I can do. Sorry."),
-        "File Not Found");
-
-  // Attempt to load
-  ALLEGRO_SAMPLE* temp_sample = nullptr;
-
-  if (!(temp_sample = al_load_sample(file.c_str())))
-    abort_on_error(
-        std::string("There was an error loading " + file + "\nOh no :("),
-        "Loading Error");
-
-  // std::cout<<" Success.\n";
-
-  return temp_sample;
-}
-
-// Load bitmap if exits, or throw error
-ALLEGRO_BITMAP* tools::load_bitmap_ex(std::string file) {
-  // std::cout<<"Loading bitmap "<<file<<".";
-
-  // Check if file exists
-  std::ifstream f(file.c_str());
-
-  if (!f.good())
-    abort_on_error(
-        std::string("Cannot find image " + file +
-                    "\nYour file is gone and there's nothing I can do. Sorry."),
-        "File Not Found");
-
-  // Attempt to load
-  ALLEGRO_BITMAP* temp_image = nullptr;
-
-  if (!(temp_image = al_load_bitmap(file.c_str())))
-    abort_on_error(
-        std::string("There was an error loading " + file + "... \nSorry..."),
-        "Loading Error");
-
-  // std::cout<<" Success.\n";
-
-  return temp_image;
+int tools::get_text_height(asw::Font newFont, std::string newText) {
+  return asw::util::get_text_size(newFont, newText).y;
 }
 
 // Convert char to float

@@ -3,40 +3,27 @@
  * A.D.S. Games
  * 06/05/2017
  **/
-#ifndef MENU_H
-#define MENU_H
+#pragma once
 
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_font.h>
-#include <allegro5/allegro_image.h>
-#include <allegro5/allegro_ttf.h>
+#include <asw/asw.h>
 
-#include "MusicManager.h"
 #include "Options.h"
-#include "Sound.h"
 #include "UI/button.h"
-#include "listeners/joystickListener.h"
-#include "listeners/keyListener.h"
 #include "state.h"
 #include "tools.h"
 
 // Menu
-class menu : public state {
+class menu : public asw::scene::Scene<ProgramStates> {
  public:
-  menu();
-  virtual ~menu(){};
+  using asw::scene::Scene<ProgramStates>::Scene;
 
-  void update();
-  void draw();
+  void init() override;
+  void update(float dt) override;
+  void draw() override;
 
  private:
   // Images
-  ALLEGRO_BITMAP* splash;
-  ALLEGRO_BITMAP* loading;
-
-  ALLEGRO_FONT* menu_font;
-
-  bool loadingb = false;
+  asw::Texture splash;
+  asw::Texture loading;
+  asw::Font menu_font;
 };
-
-#endif  // MENU_H

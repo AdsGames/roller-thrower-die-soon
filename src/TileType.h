@@ -1,15 +1,11 @@
-#ifndef TILETYPE_H
-#define TILETYPE_H
+#pragma once
 
-#include <allegro5/allegro.h>
+#include <asw/asw.h>
 
 class TileType {
  public:
-  TileType(int id, ALLEGRO_BITMAP* image);
-  virtual ~TileType();
+  TileType(int id, asw::Texture image);
 
-  ALLEGRO_BITMAP* image;
+  asw::Texture image;
   int id;
 };
-
-#endif  // TILETYPE_H
