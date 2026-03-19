@@ -7,12 +7,10 @@
 
 #include <asw/asw.h>
 
-#include "options.h"
-#include "ui/button.h"
 #include "state.h"
 
 // Menu
-class menu : public asw::scene::Scene<ProgramStates> {
+class Menu : public asw::scene::Scene<ProgramStates> {
  public:
   using asw::scene::Scene<ProgramStates>::Scene;
 
@@ -21,8 +19,5 @@ class menu : public asw::scene::Scene<ProgramStates> {
   void draw() override;
 
  private:
-  // Images
-  asw::Texture splash;
-  asw::Texture loading;
-  asw::Font menu_font;
+  asw::ui::Root _ui_root;
 };

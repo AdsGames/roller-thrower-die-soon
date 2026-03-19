@@ -14,4 +14,7 @@ class Init : public asw::scene::Scene<ProgramStates> {
   using asw::scene::Scene<ProgramStates>::Scene;
 
   void update(float dt) override;
+
+ private:
+  asw::Music _game_music;
 };

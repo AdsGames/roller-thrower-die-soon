@@ -1,0 +1,57 @@
+{
+  "levels": [
+    {
+      "level_number": 1,
+      "total_guests": 10,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level1.txt",
+      "hidden_buttons": [
+        "path_0", "path_1", "path_2", "path_3",
+        "tweezer", "cost_100",
+        "fast_forward",
+        "coaster", "cost_500"
+      ]
+    },
+    {
+      "level_number": 2,
+      "total_guests": 15,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level2.txt",
+      "hidden_buttons": [
+        "path_0", "path_1", "path_2", "path_3",
+        "tweezer", "cost_100",
+        "coaster", "cost_500"
+      ]
+    },
+    {
+      "level_number": 3,
+      "total_guests": 70,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level3.txt",
+      "hidden_buttons": [
+        "coaster", "cost_500"
+      ]
+    },
+    {
+      "level_number": 4,
+      "total_guests": 150,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level4.txt",
+      "hidden_buttons": []
+    },
+    {
+      "level_number": 5,
+      "total_guests": 200,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level5.txt",
+      "hidden_buttons": []
+    },
+    {
+      "level_number": 6,
+      "total_guests": 200,
+      "money_target": 0,
+      "tile_map_file": "assets/maps/level6.txt",
+      "hidden_buttons": []
+    }
+  ]
+}

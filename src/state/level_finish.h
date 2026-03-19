@@ -2,9 +2,7 @@
 
 #include <asw/asw.h>
 
-#include "ui/ui_element.h"
-#include "ui/ui_handler.h"
-#include "ui/button.h"
+#include "../level_config.h"
 
 #include "game.h"
 #include "state.h"
@@ -18,9 +16,10 @@ class LevelFinish : public asw::scene::Scene<ProgramStates> {
   void update(float dt) override;
 
  private:
-  UIHandler LevelFinishUI;
+  asw::ui::Root _ui;
+  LevelConfig _config;
 
-  asw::Font font;
-  asw::Font font_big;
-  asw::Font font_extra_thicc;
+  asw::Font _font;
+  asw::Font _font_big;
+  asw::Font _font_extra_thicc;
 };

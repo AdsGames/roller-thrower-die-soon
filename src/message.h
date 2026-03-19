@@ -1,5 +1,6 @@
 #pragma once
 
+#include <asw/asw.h>
 #include <string>
 #include <vector>
 
@@ -10,4 +11,7 @@ class Message {
   static void load();
   static void send_message(const std::string& message);
   static void clear();
+
+ private:
+  static asw::Font font;
 };

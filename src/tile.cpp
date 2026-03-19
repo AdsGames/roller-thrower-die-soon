@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-Tile::Tile(const asw::Vec2<float>& position, TileType type)
+Tile::Tile(const asw::Vec2f& position, TileType type)
     : position(position), type(type) {
   // Set sprites
   switch (type) {
@@ -52,9 +52,8 @@ Tile::Tile(const asw::Vec2<float>& position, TileType type)
       for (int i = 0; i < 4; i++) {
         spritesheet_water[i] = asw::assets::create_texture(128, 64);
         asw::display::set_render_target(spritesheet_water[i]);
-        asw::draw::stretch_sprite_blit(sprite,
-                                       asw::Quad<float>(i * 128, 0, 128, 64),
-                                       asw::Quad<float>(0, 0, 128, 64));
+        asw::draw::stretch_sprite_blit(sprite, asw::Quadf(i * 128, 0, 128, 64),
+                                       asw::Quadf(0, 0, 128, 64));
         asw::display::reset_render_target();
       }
       break;
@@ -84,7 +83,7 @@ Tile::Tile(const asw::Vec2<float>& position, TileType type)
 }
 
 // Check if x and y are in tile (diamond check)
-bool Tile::colliding(const asw::Vec2<float>& pos) const {
+bool Tile::colliding(const asw::Vec2f& pos) const {
   const float dx = std::abs(pos.x - (iso_position.x + 64.0F)) / 64.0F;
   const float dy = std::abs(pos.y - (iso_position.y + 32.0F)) / 32.0F;
   return (dx + dy) <= 1.0F;
@@ -94,19 +93,18 @@ void Tile::draw() const {
   if (sprite != nullptr) {
     if (type == TileType::Umbrella) {
       asw::draw::sprite(sprite,
-                        asw::Vec2<float>(iso_position.x, iso_position.y - 57));
+                        asw::Vec2f(iso_position.x, iso_position.y - 57));
     } else if (type == TileType::Coaster) {
-      asw::draw::sprite(
-          sprite, asw::Vec2<float>(iso_position.x - 238, iso_position.y - 319));
+      asw::draw::sprite(sprite,
+                        asw::Vec2f(iso_position.x - 238, iso_position.y - 319));
     } else if (type == TileType::Water) {
       const auto frame = static_cast<int>(frame_counter * FRAMES_PER_SECOND) %
                          spritesheet_water.size();
 
       asw::draw::sprite(spritesheet_water[frame],
-                        asw::Vec2<float>(iso_position.x, iso_position.y));
+                        asw::Vec2f(iso_position.x, iso_position.y));
     } else {
-      asw::draw::sprite(sprite,
-                        asw::Vec2<float>(iso_position.x, iso_position.y));
+      asw::draw::sprite(sprite, asw::Vec2f(iso_position.x, iso_position.y));
     }
   }
 

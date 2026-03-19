@@ -1,13 +1,11 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
-#include "ui/ui_element.h"
-#include "ui/ui_handler.h"
-#include "ui/button.h"
-#include "state.h"
-
+#include "../level_config.h"
 #include "game.h"
+#include "state.h"
 
 class Options : public asw::scene::Scene<ProgramStates> {
  public:
@@ -18,12 +16,5 @@ class Options : public asw::scene::Scene<ProgramStates> {
   void update(float dt) override;
 
  private:
-  asw::Font font;
-  asw::Font font_big;
-
-  UIHandler OptionsUI;
-
-  asw::Texture cursor;
-  asw::Texture background;
-  asw::Texture load;
+  asw::ui::Root _ui;
 };

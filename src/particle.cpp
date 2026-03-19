@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-Particle::Particle(const asw::Vec2<float>& position, ParticleType type)
+Particle::Particle(const asw::Vec2f& position, ParticleType type)
     : position(position), type(type) {
   switch (type) {
     case ParticleType::Coin:
@@ -25,9 +25,9 @@ Particle::Particle(const asw::Vec2<float>& position, ParticleType type)
 
 void Particle::draw() const {
   if (type == ParticleType::EnemyDeath) {
-    asw::draw::sprite(sprite, position + asw::Vec2<float>(128, 64));
+    asw::draw::sprite(sprite, position + asw::Vec2f(128, 64));
   } else {
-    asw::draw::sprite(sprite, position - asw::Vec2<float>(8, 8));
+    asw::draw::sprite(sprite, position - asw::Vec2f(8, 8));
   }
 }
 
