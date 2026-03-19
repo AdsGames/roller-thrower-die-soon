@@ -19,7 +19,7 @@ class EntityManager {
 
   void update_guests(float dt);
   void update_carts(float dt);
-  void update_enemies();
+  void update_enemies(float dt);
   void update_particles(float dt);
 
   void draw_guests() const;

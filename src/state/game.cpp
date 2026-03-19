@@ -284,7 +284,7 @@ void Game::update(float dt) {
   }
 
   // Enemy lifecycle
-  _entities.update_enemies();
+  _entities.update_enemies(dt);
 
   // Guest processing
   for (auto& guest : _entities.guests()) {

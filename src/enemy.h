@@ -4,36 +4,34 @@
 
 class Enemy {
  public:
-  Enemy(int x, int y);
+  Enemy(const asw::Vec2f& pos);
 
   // Run any logic needed by enemy
-  void update();
+  void update(float dt);
 
   // Draw enemy to screen
   void draw() const;
 
-  // Applys a variable amount of damage
-  // to enemy
+  // Applys a variable amount of damage to enemy
   void apply_damage(int amount);
 
-  // Getters for position
-  float get_x() const { return _x; }
-  float get_y() const { return _y; }
-  asw::Vec2f get_position() const { return asw::Vec2f(_x, _y); }
   int get_health() const { return _health; }
 
+  const asw::Quadf& get_transform() const { return _transform; }
+
  private:
+  constexpr static float FRAMES_PER_SECOND = 50;
+
   // Images
   asw::Texture _sprite;
   asw::Texture _spritesheet[62];
   asw::Font _font;
 
   // Position
-  int _x;
-  int _y;
+  asw::Quadf _transform;
 
   // Animation
-  int _frame = 0;
+  float _frame_timer = 0;
 
   // Hit points
   int _health = 1000;

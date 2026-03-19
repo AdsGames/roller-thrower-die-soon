@@ -92,10 +92,7 @@ bool resolve_vs_enemies(Guest& guest,
       asw::Quadf(guest.get_position() - asw::Vec2f(8, 12), asw::Vec2f(16, 24));
 
   for (auto& enemy : enemies) {
-    const asw::Quadf enemy_quad =
-        asw::Quadf(enemy.get_position(), asw::Vec2f(100, 100));
-
-    if (!guest_quad.collides(enemy_quad)) {
+    if (!guest_quad.collides(enemy.get_transform())) {
       continue;
     }
 
@@ -124,10 +121,7 @@ bool resolve_vs_enemies(Cart& cart,
       asw::Quadf(cart.get_position() - asw::Vec2f(8, 12), asw::Vec2f(16, 24));
 
   for (auto& enemy : enemies) {
-    const asw::Quadf enemy_quad =
-        asw::Quadf(enemy.get_position(), asw::Vec2f(498, 297));
-
-    if (!cart_quad.collides(enemy_quad)) {
+    if (!cart_quad.collides(enemy.get_transform())) {
       continue;
     }
 

@@ -1,6 +1,6 @@
 #include "enemy.h"
 
-Enemy::Enemy(int x, int y) {
+Enemy::Enemy(const asw::Vec2f& pos) {
   _sprite = asw::assets::load_texture("assets/images/flail.png", "flail");
   _font = asw::assets::load_font("assets/font/font.ttf", 32, "font");
 
@@ -19,11 +19,13 @@ Enemy::Enemy(int x, int y) {
     }
   }
 
-  const int bigx = x * 64;
-  const int bigy = y * 64;
+  const int bigx = pos.x * 64;
+  const int bigy = pos.y * 64;
 
-  _x = (bigx - bigy);
-  _y = (bigx + bigy) / 2;
+  _transform.position.x = (bigx - bigy);
+  _transform.position.y = (bigx + bigy) / 2;
+  _transform.size.x = 498;
+  _transform.size.y = 297;
 }
 
 void Enemy::apply_damage(int amount) {
@@ -31,12 +33,14 @@ void Enemy::apply_damage(int amount) {
   _health = std::max(_health, 0);
 }
 
-void Enemy::update() {
-  _frame = (_frame + 1) % 62;
+void Enemy::update(float dt) {
+  _frame_timer += dt;
 }
 
 void Enemy::draw() const {
-  asw::draw::sprite(_spritesheet[_frame], asw::Vec2f(_x, _y));
+  const int frame = static_cast<int>(_frame_timer * FRAMES_PER_SECOND) % 62;
+
+  asw::draw::sprite(_spritesheet[frame], _transform.position);
   asw::draw::text(_font, std::format("HP:{}", _health),
-                  asw::Vec2f(_x + 200, _y - 50), asw::color::red);
+                  _transform.position + asw::Vec2f(200, -50), asw::color::red);
 }

@@ -21,7 +21,7 @@ void EntityManager::add_guest(Guest guest) {
 }
 
 void EntityManager::spawn_enemy(int x, int y) {
-  _enemies.emplace_back(x, y);
+  _enemies.emplace_back(asw::Vec2f(x, y));
 }
 
 void EntityManager::spawn_particle(const asw::Vec2f& pos, ParticleType type) {
@@ -44,12 +44,13 @@ void EntityManager::update_carts(float dt) {
   std::erase_if(_carts, [](const Cart& c) { return c.get_is_dead(); });
 }
 
-void EntityManager::update_enemies() {
+void EntityManager::update_enemies(float dt) {
   for (auto& enemy : _enemies) {
-    enemy.update();
+    enemy.update(dt);
 
     if (enemy.get_health() == 0) {
-      spawn_particle(enemy.get_position(), ParticleType::EnemyDeath);
+      spawn_particle(enemy.get_transform().get_center(),
+                     ParticleType::EnemyDeath);
     }
   }
 
