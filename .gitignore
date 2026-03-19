@@ -44,9 +44,8 @@ CppCheckResults.xml
 CMakeFiles
 CMakeCache.txt
 Makefile
-*.cmake
 install_manifest.txt
 bin
 docs
 lib
-build/RollerThrowerDieSoon*
+build/
